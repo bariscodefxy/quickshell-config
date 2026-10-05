@@ -66,7 +66,7 @@ Variants {
                     required property Item modelData
 
                     height: modelData.visible ? modelData.height : 0
-                    intersection: Intersection.Combine
+                    intersection: Intersection.Subtract
                     width: modelData.visible ? modelData.width : 0
                     x: modelData.x + root.marginSize
                     y: modelData.y + bar.implicitHeight
