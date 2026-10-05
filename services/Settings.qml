@@ -29,11 +29,13 @@ Singleton {
     property var pinned: ["thunar", "chromium-browser", "code", "Alacritty"]
 
     function glassBarOpacity(): real {
-        return 0.15 + root.glass * 0.6;
+        // No compositor blur available: keep the bar mostly opaque so text
+        // stays readable over windows. Slider still trims the last bit.
+        return 0.55 + root.glass * 0.35;
     }
 
     function glassMenuOpacity(): real {
-        return 0.3 + root.glass * 0.5;
+        return 0.68 + root.glass * 0.3;
     }
 
     function expandHome(path: string): string {

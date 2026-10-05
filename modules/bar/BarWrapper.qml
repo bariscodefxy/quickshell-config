@@ -26,9 +26,41 @@ Item {
     implicitHeight: root.contentHeight
     visible: true
 
+    // Liquid glass bar: frosted base + top-down sheen + specular top edge.
+    // (True background blur is unavailable — the compositor blur rule broke
+    // app window rendering — so depth is faked with layered translucency.)
     Rectangle {
         anchors.fill: parent
         color: Qt.alpha(Foundations.glass.barBg, Settings.glassBarOpacity())
+    }
+
+    Rectangle {
+        anchors.fill: parent
+
+        gradient: Gradient {
+            orientation: Gradient.Vertical
+
+            GradientStop {
+                position: 0.0
+                color: Qt.alpha("#ffffff", 0.16)
+            }
+            GradientStop {
+                position: 0.45
+                color: Qt.alpha("#ffffff", 0.04)
+            }
+            GradientStop {
+                position: 1.0
+                color: Qt.alpha("#ffffff", 0.0)
+            }
+        }
+    }
+
+    Rectangle {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        color: Qt.alpha("#ffffff", 0.45)
+        height: 1
     }
 
     Rectangle {

@@ -44,8 +44,8 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: 1
-        color: titleMouse.containsMouse || root.isOpen ? Qt.alpha(Foundations.glass.barText, root.isOpen ? 0.12 : 0.07) : "transparent"
-        radius: 4
+        color: titleMouse.containsMouse || root.isOpen ? Qt.alpha(Foundations.glass.barText, root.isOpen ? 0.16 : 0.08) : "transparent"
+        radius: 6
         z: -1
     }
 
@@ -87,6 +87,21 @@ Item {
         }
     }
 
+    // Soft drop shadow under the frosted menu (layered rects: no
+    // compositor blur available for a real shadow).
+    Rectangle {
+        id: shadow
+
+        visible: root.isOpen
+        x: 0
+        y: parent.height + 6
+        width: root.dropdownWidth
+        height: listContent.height + 14
+        radius: 13
+        color: Qt.alpha("#000000", 0.14)
+        z: 99
+    }
+
     Rectangle {
         id: dropdown
 
@@ -95,11 +110,43 @@ Item {
         y: parent.height + 4
         width: root.dropdownWidth
         height: listContent.height + 12
-        radius: 8
+        radius: 12
         color: Qt.alpha(Foundations.glass.menuBg, Settings.glassMenuOpacity())
         border.width: 1
-        border.color: Qt.alpha("#000000", 0.12)
+        border.color: Qt.alpha("#000000", 0.1)
         z: 100
+
+        // Top-down sheen for the frosted-glass depth.
+        Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+
+            gradient: Gradient {
+                orientation: Gradient.Vertical
+
+                GradientStop {
+                    position: 0.0
+                    color: Qt.alpha("#ffffff", 0.14)
+                }
+                GradientStop {
+                    position: 0.5
+                    color: Qt.alpha("#ffffff", 0.0)
+                }
+            }
+        }
+
+        // Inner specular highlight along the top edge.
+        Rectangle {
+            anchors.left: parent.left
+            anchors.leftMargin: 3
+            anchors.right: parent.right
+            anchors.rightMargin: 3
+            anchors.top: parent.top
+            anchors.topMargin: 1
+            color: Qt.alpha("#ffffff", 0.5)
+            height: 1
+            radius: 1
+        }
 
         Column {
             id: listContent
@@ -116,7 +163,7 @@ Item {
                     required property int index
                     required property var modelData
 
-                    height: del.modelData.separator === true ? 9 : 24
+                    height: del.modelData.separator === true ? 9 : 28
                     width: listContent.width
 
                     Rectangle {
@@ -130,7 +177,7 @@ Item {
                     Rectangle {
                         anchors.fill: parent
                         color: root.hoveredIndex === del.index ? Foundations.glass.menuHover : "transparent"
-                        radius: 5
+                        radius: 7
                         visible: del.modelData.separator !== true
                     }
 

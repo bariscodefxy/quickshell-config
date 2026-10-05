@@ -6,6 +6,7 @@ on release/tag.
 
 ## [Unreleased]
 
+- `feat`: liquid-glass menu bar + dropdowns — frosted base with top-down sheen, specular top edge, drop shadow and rounded (12px) menus with taller items; bar/menu opacity floors raised since no compositor blur is available. All left menus (/app/File/Edit/View/Go/Window/Help) verified against real binaries and niri actions.
 - `fix`: disable compositor background blur (layer-rule removed) — it stopped app windows from rendering; shell keeps its tinted-glass look without blur until a safe alternative is found. Shell namespace temporarily `quickshell-drawers-test`, revert after relogin.
 - `feat`: macOS-style dock — bottom-centered glass pill with pinned apps (persisted), live running apps with indicator dots, cursor magnification, tooltips, right-click menu (Focus/Open, Quit, Keep/Remove), System Settings shortcut and Trash; windows underneath respect a bottom exclusion zone.
 - `feat`: wallpaper management in System Settings — new Wallpaper page with thumbnail grid from `~/Pictures/Wallpapers`, fill/fit mode, rescan and folder creation; applies with a macOS-style crossfade via `awww` (successor of `swww`) and restores the last wallpaper on login. Requires the `swww` nixpkgs package (provides the `awww` binaries; added to the flake wrapper PATH, bare runs need it in system packages or `nix profile`).
