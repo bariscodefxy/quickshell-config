@@ -34,12 +34,19 @@ Scope {
             visibilities.launcher = true;
             visibilities.searchText = text;
         }
+        function spotlight(): void {
+            const visibilities = Visibilities.getForActive();
+            visibilities.launcher = true;
+            visibilities.searchText = "";
+        }
         function toggle(text: string): void {
+            const query = text ?? "";
             const visibilities = Visibilities.getForActive();
             if (visibilities.launcher) {
                 visibilities.launcher = false;
             } else {
-                open(text);
+                visibilities.searchText = query;
+                visibilities.launcher = true;
             }
         }
 
