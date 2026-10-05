@@ -35,13 +35,6 @@ Shape {
     }
     Background {
         maxAvailableHeight: root.height
-        startX: (root.width - wrapper.width) / 2 - root.radius
-        startY: (root.height - wrapper.height) / 2 - root.radius
-        wrapper: root.panels.settings
-        radius: root.radius
-    }
-    Background {
-        maxAvailableHeight: root.height
         startX: wrapper.x - root.radius
         startY: 0
         wrapper: root.panels.popouts

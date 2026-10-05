@@ -41,6 +41,7 @@ MouseArea {
 
     onPressed: event => {
         bar.closeMenus();
+        panels.dock.closeMenu();
         if (event.y > bar.implicitHeight && !inTopPanel(panels.popouts, event.x, event.y))
             popouts.hasCurrent = false;
     }

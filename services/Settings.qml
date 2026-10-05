@@ -26,6 +26,7 @@ Singleton {
     property string wallpaper: ""
     property string wallpaperDir: "~/Pictures/Wallpapers"
     property string wallpaperMode: "fill"
+    property var pinned: ["thunar", "chromium-browser", "code", "Alacritty"]
 
     function glassBarOpacity(): real {
         return 0.35 + root.glass * 0.6;
@@ -96,6 +97,7 @@ Singleton {
     onWallpaperChanged: root.scheduleSave()
     onWallpaperDirChanged: root.scheduleSave()
     onWallpaperModeChanged: root.scheduleSave()
+    onPinnedChanged: root.scheduleSave()
 
     Timer {
         id: saveTimer
@@ -129,6 +131,7 @@ Singleton {
             property string wallpaper: root.wallpaper
             property string wallpaperDir: root.wallpaperDir
             property string wallpaperMode: root.wallpaperMode
+            property var pinned: root.pinned
 
             onGlassChanged: root.glass = glass ?? 0.55
             onShowAudioChanged: root.showAudio = showAudio ?? true
@@ -144,6 +147,10 @@ Singleton {
             onWallpaperChanged: root.wallpaper = wallpaper ?? ""
             onWallpaperDirChanged: root.wallpaperDir = wallpaperDir ?? "~/Pictures/Wallpapers"
             onWallpaperModeChanged: root.wallpaperMode = wallpaperMode ?? "fill"
+            onPinnedChanged: {
+                if (root.pinned !== pinned)
+                    root.pinned = pinned ?? ["thunar", "chromium-browser", "code", "Alacritty"];
+            }
         }
     }
 }

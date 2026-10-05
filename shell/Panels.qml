@@ -2,6 +2,7 @@ import qs.ds
 import qs.modules.notifications as NotificationsList
 import qs.modules.launcher as Launcher
 import qs.modules.settings as Settings
+import qs.modules.dock as Dock
 import qs.modules.popups as Popups
 import Quickshell
 import QtQuick
@@ -13,6 +14,7 @@ Item {
     readonly property Launcher.Wrapper launcher: launcher
     readonly property NotificationsList.Wrapper notifications: notifications
     readonly property Settings.Wrapper settings: settings
+    readonly property Dock.Wrapper dock: dock
     readonly property Popups.Wrapper popouts: popouts
     required property ShellScreen screen
     required property PersistentProperties visibilities
@@ -42,6 +44,17 @@ Item {
         id: settings
 
         anchors.centerIn: parent
+        panels: root
+        screen: root.screen
+        visibilities: root.visibilities
+    }
+    Dock.Wrapper {
+        id: dock
+
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: root.margin
+        anchors.horizontalCenter: parent.horizontalCenter
+        margin: root.margin
         panels: root
         screen: root.screen
         visibilities: root.visibilities

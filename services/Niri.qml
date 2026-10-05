@@ -140,6 +140,16 @@ Singleton {
         focusWindowProcess.running = true;
     }
 
+    function closeAppWindows(appId: string): void {
+        closeAppTimer.stop();
+        const lower = appId.toLowerCase();
+        closeAppProcess.targetAppId = lower;
+        closeAppProcess.queue = [];
+        closeAppProcess.phase = 0;
+        closeAppProcess.running = false;
+        closeAppProcess.running = true;
+    }
+
     function spawn(command: string): void {
         spawnProcess.command = ["niri", "msg", "action", "spawn", "--"].concat(command.split(" "));
         spawnProcess.running = false;
@@ -397,6 +407,57 @@ Singleton {
         id: focusWindowProcess
 
         running: false
+    }
+
+    Process {
+        id: closeAppProcess
+
+        property string targetAppId: ""
+        property var queue: []
+        property int phase: 0
+
+        running: false
+        command: ["niri", "msg", "-j", "windows"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const windows = JSON.parse(text.trim());
+                    const ids = [];
+                    for (let i = 0; i < windows.length; i++) {
+                        if ((windows[i].app_id || "").toLowerCase() === closeAppProcess.targetAppId)
+                            ids.push(windows[i].id);
+                    }
+                    closeAppProcess.queue = ids;
+                    closeAppProcess.phase = 0;
+                    closeAppTimer.start();
+                } catch (e) {
+                    console.log("Error parsing windows JSON for close-app:", e);
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: closeAppTimer
+
+        interval: 220
+        repeat: true
+
+        onTriggered: {
+            if (closeAppProcess.queue.length === 0) {
+                closeAppTimer.stop();
+                return;
+            }
+            if (closeAppProcess.phase === 0) {
+                root.focusWindowById(closeAppProcess.queue[0]);
+                closeAppProcess.phase = 1;
+            } else {
+                root.closeFocusedWindow();
+                closeAppProcess.queue = closeAppProcess.queue.slice(1);
+                closeAppProcess.phase = 0;
+            }
+        }
     }
 
     Process {

@@ -27,6 +27,7 @@ Variants {
 
         Exclusions {
             bar: bar
+            dock: panels.dock
             margin: root.marginSize
             screen: scope.modelData
         }

@@ -9,6 +9,7 @@ Scope {
     id: root
 
     required property Item bar
+    required property Item dock
     required property ShellScreen screen
     required property int margin
 
@@ -24,6 +25,7 @@ Scope {
     }
     ExclusionZone {
         anchors.bottom: true
+        exclusiveZone: root.dock.exclusiveZone
     }
 
     component ExclusionZone: PanelWindow {
