@@ -19,10 +19,8 @@ Item {
 
     property string openMenu: ""
 
-    // Geometry of the open menu dropdown in window coordinates. The shell
-    // input mask needs it: without a mask region, clicks on the dropdown
-    // fall through to the app underneath.
-    readonly property rect openDropdownRect: openMenu === "" ? Qt.rect(0, 0, 0, 0) : leftMenus.dropdownRect(root)
+    // Open menu geometry in window coordinates, for the shell input mask.
+    readonly property rect menuGeo: leftMenus.menuGeo
 
     function closeMenus(): void {
         root.openMenu = "";
@@ -60,6 +58,7 @@ Item {
             openMenu: root.openMenu
             screen: root.screen
             visibilities: root.visibilities
+            windowRef: root
 
             onCloseRequested: root.openMenu = ""
             onOpenRequested: name => {

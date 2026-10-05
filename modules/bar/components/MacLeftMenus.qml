@@ -13,9 +13,65 @@ RowLayout {
     required property string openMenu
     required property var screen
     required property PersistentProperties visibilities
+    // Bar root: window coordinates for the input-mask measurement.
+    required property Item windowRef
 
     signal closeRequested()
     signal openRequested(string name)
+
+    // Open menu geometry in window coordinates, for the shell input mask.
+    // Measured imperatively after layout settles: binding chains through
+    // mapToItem collapsed to zero and clicks fell through to the app below.
+    property rect menuGeo: Qt.rect(0, 0, 0, 0)
+    property string pendingMenu: ""
+    property int measureTries: 0
+
+    onOpenMenuChanged: {
+        root.menuGeo = Qt.rect(0, 0, 0, 0);
+        measureTimer.stop();
+        if (root.openMenu !== "") {
+            root.pendingMenu = root.openMenu;
+            root.measureTries = 0;
+            measureTimer.start();
+        }
+    }
+
+    onActiveAppIdChanged: {
+        // Menu items rebuild per app; re-measure if a menu is open.
+        if (root.openMenu !== "") {
+            root.pendingMenu = root.openMenu;
+            root.measureTries = 0;
+            measureTimer.stop();
+            measureTimer.start();
+        }
+    }
+
+    Timer {
+        id: measureTimer
+
+        interval: 50
+        repeat: false
+
+        onTriggered: root.measureMenu()
+    }
+
+    function measureMenu(): void {
+        for (let i = 0; i < children.length; i++) {
+            const c = children[i];
+            if (c && c.menuName === root.pendingMenu && c.dropdownItem !== undefined) {
+                const h = c.dropdownItem.height;
+                if (h <= 0 && root.measureTries < 5) {
+                    root.measureTries++;
+                    measureTimer.start();
+                    return;
+                }
+                const p = c.mapToItem(root.windowRef, 0, c.height + 4);
+                root.menuGeo = Qt.rect(p.x - 4, p.y - 2, c.dropdownWidth + 8, h + 12);
+                return;
+            }
+        }
+        root.menuGeo = Qt.rect(0, 0, 0, 0);
+    }
 
     property Toplevel activeToplevel: ToplevelManager.activeToplevel
     property string activeAppId: ""
@@ -117,18 +173,6 @@ RowLayout {
 
     function goMenuItems(): var {
         return root.withActions(AppMenus.goItems(root.activeAppId));
-    }
-
-    // Window coordinates of the open dropdown, for the shell input mask.
-    function dropdownRect(target: Item): rect {
-        for (let i = 0; i < children.length; i++) {
-            const c = children[i];
-            if (c && c.menuName === root.openMenu && c.menuName !== undefined) {
-                const p = c.mapToItem(target, 0, c.height + 4);
-                return Qt.rect(p.x, p.y, c.dropdownWidth, c.dropdownHeight);
-            }
-        }
-        return Qt.rect(0, 0, 0, 0);
     }
 
     Component.onCompleted: {

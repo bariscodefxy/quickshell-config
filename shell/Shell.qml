@@ -79,11 +79,11 @@ Variants {
             Region {
                 id: menuMask
 
-                height: bar.menuRect.height > 0 ? bar.menuRect.height + 10 : 0
+                height: bar.menuGeo.height
                 intersection: Intersection.Subtract
-                width: bar.menuRect.width > 0 ? bar.menuRect.width + 8 : 0
-                x: bar.menuRect.x - 4
-                y: bar.menuRect.y - 4
+                width: bar.menuGeo.width
+                x: bar.menuGeo.x
+                y: bar.menuGeo.y
             }
 
             Rectangle {
