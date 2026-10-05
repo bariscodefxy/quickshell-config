@@ -61,17 +61,19 @@ Rectangle {
                     width: 8
                 }
 
-                MacIcon {
+                ThemeIcon {
                     color: root.colour
-                    name: "mic-off"
+                    fallback: "mic-off"
+                    name: "audio-input-microphone-muted-symbolic"
                     size: 15
                     visible: Audio.sourceMuted
                 }
 
-                MacIcon {
+                ThemeIcon {
                     clickable: true
                     color: root.colour
-                    name: Services.IconsService.getMacVolumeIcon(Audio.volume, Audio.muted)
+                    fallback: Services.IconsService.getMacVolumeIcon(Audio.volume, Audio.muted)
+                    name: Services.IconsService.getThemeVolumeIcon(Audio.volume, Audio.muted)
                     size: 17
 
                     onClicked: {
@@ -115,9 +117,10 @@ Rectangle {
                     root.popoutRequested("network", netClick);
                 }
 
-                MacIcon {
+                ThemeIcon {
                     color: root.colour
-                    name: Services.IconsService.getMacNetworkIcon(Network.active?.signalStrength ?? 0, Network.hasEthernetConnection, Network.active != null)
+                    fallback: Services.IconsService.getMacNetworkIcon(Network.active?.signalStrength ?? 0, Network.hasEthernetConnection, Network.active != null)
+                    name: Services.IconsService.getThemeNetworkIcon(Network.active?.signalStrength ?? 0, Network.hasEthernetConnection, Network.active != null)
                     size: 17
                 }
             }
@@ -145,7 +148,7 @@ Rectangle {
                     readonly property bool anyConnected: OpenVPN.connected || Tailscale.connected
                     readonly property bool anyConnecting: OpenVPN.connecting || Tailscale.connecting
 
-                    MacIcon {
+                    ThemeIcon {
                         id: vpnIcon
 
                         anchors.centerIn: parent
@@ -158,7 +161,8 @@ Rectangle {
                                 return Foundations.palette.base0B;
                             return root.colour;
                         }
-                        name: vpnState.anyConnecting ? "sync" : "key"
+                        fallback: vpnState.anyConnecting ? "sync" : "key"
+                        name: "network-vpn-symbolic"
                         size: 15
                     }
 
@@ -214,9 +218,10 @@ Rectangle {
                         root.popoutRequested("bluetooth", btClick);
                     }
 
-                    MacIcon {
+                    ThemeIcon {
                         color: root.colour
-                        name: Bluetooth.defaultAdapter?.enabled ? "bluetooth" : "bluetooth-off"
+                        fallback: Bluetooth.defaultAdapter?.enabled ? "bluetooth" : "bluetooth-off"
+                        name: Bluetooth.defaultAdapter?.enabled ? "bluetooth-active-symbolic" : "bluetooth-disabled-symbolic"
                         size: 15
                     }
                 }
@@ -227,13 +232,14 @@ Rectangle {
                         values: Bluetooth.devices.values.filter(d => d.state !== BluetoothDeviceState.Disconnected)
                     }
 
-                    MacIcon {
+                    ThemeIcon {
                         id: device
 
                         required property BluetoothDevice modelData
 
                         color: root.colour
-                        name: Services.IconsService.getMacBluetoothIcon(modelData.icon)
+                        fallback: Services.IconsService.getMacBluetoothIcon(modelData.icon)
+                        name: Services.IconsService.getThemeBluetoothIcon(modelData.icon)
                         size: 15
 
                         SequentialAnimation on opacity {
@@ -274,11 +280,12 @@ Rectangle {
                     height: 18
                     width: 27
 
-                    MacBattery {
+                    ThemeIcon {
                         anchors.centerIn: parent
-                        charging: !UPower.onBattery
                         color: root.colour
-                        level: UPower.displayDevice.percentage
+                        fallback: ""
+                        name: Services.IconsService.getThemeBatteryIcon(UPower.displayDevice.percentage, !UPower.onBattery)
+                        size: 19
                         visible: UPower.displayDevice.isLaptopBattery
                     }
 

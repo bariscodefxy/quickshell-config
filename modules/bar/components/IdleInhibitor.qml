@@ -20,10 +20,11 @@ Item {
         width: 24
     }
 
-    MacIcon {
+    ThemeIcon {
         anchors.centerIn: parent
         color: IdleInhibitor.enabled ? "#ffffff" : Foundations.glass.barIcon
-        name: "moon"
+        fallback: "moon"
+        name: "weather-clear-night-symbolic"
         size: 14
     }
 

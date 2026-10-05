@@ -1,3 +1,4 @@
+//@ pragma IconTheme MacTahoe-dark
 import qs.ds
 import qs.shell
 import qs.services

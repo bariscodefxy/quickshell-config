@@ -23,10 +23,11 @@ Item {
         width: 24
     }
 
-    MacIcon {
+    ThemeIcon {
         anchors.centerIn: parent
         color: root.enabled ? "#ffffff" : Foundations.glass.barIcon
-        name: NotificationService.doNotDisturb ? "bell-slash" : "bell"
+        fallback: NotificationService.doNotDisturb ? "bell-slash" : "bell"
+        name: "notification-symbolic"
         size: 15
     }
 

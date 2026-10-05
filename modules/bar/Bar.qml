@@ -93,12 +93,13 @@ Item {
                 onPopoutRequested: (name, anchor) => root.togglePopout(name, anchor)
             }
         }
-        MacIcon {
+        ThemeIcon {
             Layout.alignment: Qt.AlignVCenter
 
             clickable: true
             color: Foundations.glass.barIcon
-            name: "magnifier"
+            fallback: "magnifier"
+            name: "system-search-symbolic"
             size: 15
             visible: Settings.showSpotlight
 

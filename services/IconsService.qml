@@ -103,4 +103,57 @@ Singleton {
             return "volume-low";
         return "volume-mute";
     }
+
+    // Freedesktop theme names for the system icon theme (MacTahoe).
+    function getThemeVolumeIcon(volume: real, isMuted: bool): string {
+        if (isMuted || volume <= 0)
+            return "audio-volume-muted-symbolic";
+        if (volume >= 0.5)
+            return "audio-volume-high-symbolic";
+        return "audio-volume-medium-symbolic";
+    }
+    function getThemeNetworkIcon(strength: real, hasEthernet: bool, connected: bool): string {
+        if (hasEthernet)
+            return "network-wired-symbolic";
+        if (!connected)
+            return "network-wireless-offline-symbolic";
+        if (strength >= 0.8)
+            return "network-wireless-signal-excellent-symbolic";
+        if (strength >= 0.55)
+            return "network-wireless-signal-good-symbolic";
+        if (strength >= 0.3)
+            return "network-wireless-signal-ok-symbolic";
+        if (strength > 0)
+            return "network-wireless-signal-weak-symbolic";
+        return "network-wireless-signal-none-symbolic";
+    }
+    function getThemeBluetoothIcon(icon: string): string {
+        if (icon.includes("headset") || icon.includes("headphones"))
+            return "audio-headphones-symbolic";
+        if (icon.includes("audio"))
+            return "audio-volume-muted-symbolic";
+        if (icon.includes("phone"))
+            return "phone-symbolic";
+        if (icon.includes("mouse"))
+            return "input-mouse-symbolic";
+        if (icon.includes("keyboard"))
+            return "input-keyboard-symbolic";
+        return "bluetooth-active-symbolic";
+    }
+    function getThemeBatteryIcon(fraction: real, charging: bool): string {
+        let base = "battery-000-symbolic";
+        if (fraction >= 0.9)
+            base = "battery-100-symbolic";
+        else if (fraction >= 0.7)
+            base = "battery-080-symbolic";
+        else if (fraction >= 0.5)
+            base = "battery-060-symbolic";
+        else if (fraction >= 0.3)
+            base = "battery-040-symbolic";
+        else if (fraction >= 0.15)
+            base = "battery-020-symbolic";
+        if (charging)
+            base = base.replace("-symbolic", "-charging-symbolic");
+        return base;
+    }
 }

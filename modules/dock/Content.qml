@@ -383,10 +383,18 @@ Item {
                         height: cell.iconH
                         width: cell.iconH
 
+                        readonly property string themeSrc: cell.modelData.kind === "settings" ? Quickshell.iconPath("preferences-system", true) : cell.modelData.kind === "trash" ? Quickshell.iconPath("user-trash", true) : ""
+
                         IconImage {
                             anchors.fill: parent
                             source: cell.modelData.entry && typeof Quickshell.iconPath === "function" ? Quickshell.iconPath(cell.modelData.entry.icon) : ""
                             visible: cell.modelData.kind === "app" && cell.modelData.entry != null
+                        }
+
+                        IconImage {
+                            anchors.fill: parent
+                            source: parent.themeSrc
+                            visible: parent.themeSrc !== ""
                         }
 
                         Rectangle {
@@ -411,7 +419,7 @@ Item {
                             color: "#f5f5f7"
                             name: cell.modelData.kind === "settings" ? "gear" : "trash"
                             size: Math.min(30, cell.iconH * 0.62)
-                            visible: cell.modelData.kind !== "app" && cell.modelData.kind !== "sep"
+                            visible: cell.modelData.kind !== "app" && cell.modelData.kind !== "sep" && parent.themeSrc === ""
                         }
                     }
 
