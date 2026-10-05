@@ -19,8 +19,11 @@ Item {
 
     property string openMenu: ""
 
-    // Open menu geometry in window coordinates, for the shell input mask.
-    readonly property rect menuGeo: leftMenus.menuGeo
+    // Open menu state for the separate menu window (shell/MenuWindow.qml).
+    readonly property int menuX: leftMenus.menuX
+    readonly property int menuY: leftMenus.menuY
+    readonly property int menuW: leftMenus.menuW
+    readonly property var menuItems: leftMenus.openItems
 
     function closeMenus(): void {
         root.openMenu = "";
@@ -53,12 +56,12 @@ Item {
             id: leftMenus
 
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: 12
+            Layout.leftMargin: leftMenus.leftMargin
 
+            barHeight: root.innerHeight
             openMenu: root.openMenu
             screen: root.screen
             visibilities: root.visibilities
-            windowRef: root
 
             onCloseRequested: root.openMenu = ""
             onOpenRequested: name => {

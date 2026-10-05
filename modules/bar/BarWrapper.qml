@@ -24,17 +24,16 @@ Item {
         content.item?.closeMenus();
     }
 
-    // Open menu geometry in window coordinates, for the shell input mask.
-    // NOTE: read through the typed Bar reference — dynamic lookup on the
-    // Item-typed Loader.item does not subscribe to change notifications
-    // and would freeze at the startup value.
+    // Open menu state for the separate menu window (shell/MenuWindow.qml).
+    // Read through the typed Bar reference (dynamic lookup on the
+    // Item-typed Loader.item would not subscribe to updates).
     readonly property Bar barItem: content.item
-    readonly property rect menuGeo: barItem ? barItem.menuGeo : Qt.rect(0, 0, 0, 0)
+    readonly property int menuX: barItem ? barItem.menuX : 0
+    readonly property int menuY: barItem ? barItem.menuY : 0
+    readonly property int menuW: barItem ? barItem.menuW : 250
+    readonly property var menuItems: barItem ? barItem.menuItems : []
+    readonly property bool menuOpen: barItem ? barItem.openMenu !== "" : false
     implicitHeight: root.contentHeight
-    // Tall hit-test area: menu dropdowns overflow below the 28px bar and Qt
-    // does not deliver mouse events into overflowing branches. implicitHeight
-    // stays 28 so layout, exclusion zone and mask geometry are unaffected.
-    height: root.barHeight + 340
     visible: true
 
     // Liquid glass bar: frosted base + top-down sheen + specular top edge.

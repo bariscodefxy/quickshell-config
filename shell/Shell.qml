@@ -47,7 +47,7 @@ Variants {
             mask: Region {
                 height: win.height - bar.implicitHeight - root.marginSize
                 intersection: Intersection.Xor
-                regions: regions.instances.concat(menuMask)
+                regions: regions.instances
                 width: win.width - root.marginSize * 2
                 x: root.marginSize
                 y: bar.implicitHeight
@@ -71,19 +71,6 @@ Variants {
                     x: modelData.x + root.marginSize
                     y: modelData.y + bar.implicitHeight
                 }
-            }
-
-            // Clickable area for the open menu-bar dropdown: unioned into the
-            // shell input region (the Xor base passes everything else
-            // through to the app underneath).
-            Region {
-                id: menuMask
-
-                height: bar.menuGeo.height
-                intersection: Intersection.Combine
-                width: bar.menuGeo.width
-                x: bar.menuGeo.x
-                y: bar.menuGeo.y
             }
 
             Rectangle {
@@ -167,6 +154,18 @@ Variants {
                     Component.onCompleted: Visibilities.bars.set(scope.modelData, this)
                 }
             }
+        }
+        // Open menu dropdown as its own layer window (full input, no mask
+        // or overflow involved, so items are always clickable).
+        MenuWindow {
+            menuItems: bar.menuItems
+            menuW: bar.menuW
+            menuX: bar.menuX
+            menuY: bar.menuY
+            open: bar.menuOpen
+            screen: scope.modelData
+
+            onCloseRequested: bar.closeMenus()
         }
     }
 }

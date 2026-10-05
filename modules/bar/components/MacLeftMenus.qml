@@ -13,64 +13,48 @@ RowLayout {
     required property string openMenu
     required property var screen
     required property PersistentProperties visibilities
-    // Bar root: window coordinates for the input-mask measurement.
-    required property Item windowRef
+    // Bar strip height: positions the menu window below the bar.
+    required property int barHeight
+    // Must match Layout.leftMargin of this row in Bar.qml.
+    readonly property int leftMargin: 12
 
     signal closeRequested()
     signal openRequested(string name)
 
-    // Open menu geometry in window coordinates, for the shell input mask.
-    // Measured imperatively after layout settles: binding chains through
-    // mapToItem collapsed to zero and clicks fell through to the app below.
-    property rect menuGeo: Qt.rect(0, 0, 0, 0)
-    property string pendingMenu: ""
-    property int measureTries: 0
+    // Open menu content + window placement, read by shell/MenuWindow.qml.
+    // Set imperatively (plain values, no binding chains).
+    property var openItems: []
+    property int menuX: 0
+    property int menuY: 0
+    property int menuW: 250
 
     onOpenMenuChanged: {
-        root.menuGeo = Qt.rect(0, 0, 0, 0);
-        measureTimer.stop();
-        if (root.openMenu !== "") {
-            root.pendingMenu = root.openMenu;
-            root.measureTries = 0;
-            measureTimer.start();
-        }
+        if (root.openMenu === "")
+            root.openItems = [];
+        else
+            root.refreshOpenMenu();
     }
 
     onActiveAppIdChanged: {
-        // Menu items rebuild per app; re-measure if a menu is open.
-        if (root.openMenu !== "") {
-            root.pendingMenu = root.openMenu;
-            root.measureTries = 0;
-            measureTimer.stop();
-            measureTimer.start();
-        }
+        // Menu items rebuild per app; refresh while open.
+        if (root.openMenu !== "")
+            root.refreshOpenMenu();
     }
 
-    Timer {
-        id: measureTimer
-
-        interval: 50
-        repeat: false
-
-        onTriggered: root.measureMenu()
-    }
-
-    function measureMenu(): void {
+    // Title x is layout-stable (no mapToItem needed): the row starts at
+    // leftMargin and titles are laid out left to right.
+    function refreshOpenMenu(): void {
         for (let i = 0; i < children.length; i++) {
             const c = children[i];
-            if (c && c.menuName === root.pendingMenu && c.dropdownItem !== undefined) {
-                const h = c.dropdownItem.height;
-                if (h <= 0 && root.measureTries < 5) {
-                    root.measureTries++;
-                    measureTimer.start();
-                    return;
-                }
-                const p = c.mapToItem(root.windowRef, 0, c.height + 4);
-                root.menuGeo = Qt.rect(p.x - 4, p.y - 2, c.dropdownWidth + 8, h + 12);
+            if (c && c.menuName === root.openMenu) {
+                root.openItems = c.items;
+                root.menuX = root.leftMargin + c.x;
+                root.menuW = c.dropdownWidth;
+                root.menuY = Math.round((root.barHeight - c.height) / 2) + c.y + c.height + 4;
                 return;
             }
         }
-        root.menuGeo = Qt.rect(0, 0, 0, 0);
+        root.openItems = [];
     }
 
     property Toplevel activeToplevel: ToplevelManager.activeToplevel
