@@ -36,10 +36,7 @@ Variants {
 
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
             WlrLayershell.keyboardFocus: visibilities.captureKeyboard ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-            // TEMP: "-test" suffix dodges the blur layer-rule that breaks
-            // app window rendering (see nix-config niri.nix). Revert to
-            // `quickshell-drawers` after the rule is removed + relogin.
-            WlrLayershell.namespace: `quickshell-drawers-test`
+            WlrLayershell.namespace: `quickshell-drawers`
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
