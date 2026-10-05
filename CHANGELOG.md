@@ -6,7 +6,7 @@ on release/tag.
 
 ## [Unreleased]
 
-- `fix`: menu-bar dropdowns are clickable now — the shell input mask used `Subtract` for panel regions, which per quickshell source can never add clickable areas (only the bar strip worked; dock/popouts/launcher clicks below it were dead too). Regions are now `Combine`, and the open menu unions its measured geometry in. Menus also dismiss when app focus changes, since empty-area clicks pass through to apps.
+- `fix`: menu-bar dropdowns are clickable now — the dropdown is its own layer window (`shell/MenuWindow.qml`, no mask, no overflow) instead of an overflowing child of the 28px bar, which Qt never hit-tests. (Earlier attempts via input-mask regions failed: `Subtract` can never add clickable areas and dynamic mask updates proved unreliable.)
 - `feat`: app-specific File/Go menus — File and Go rebuild from the focused app (browser: new/incognito window, history, bookmarks…; terminal/editor: new window, open folder…; chat/media/files: matching folders and actions); app-menu Quit now closes all of the app's windows. Note: Wayland has no menubar-export protocol, so items are per-app action maps, not the app's internal menus.
 - `feat`: liquid-glass menu bar + dropdowns — frosted base with top-down sheen, specular top edge, drop shadow and rounded (12px) menus with taller items; bar/menu opacity floors raised since no compositor blur is available. All left menus (/app/File/Edit/View/Go/Window/Help) verified against real binaries and niri actions.
 - `fix`: disable compositor background blur (layer-rule removed) — it stopped app windows from rendering; shell keeps its tinted-glass look without blur until a safe alternative is found. Shell namespace temporarily `quickshell-drawers-test`, revert after relogin.
