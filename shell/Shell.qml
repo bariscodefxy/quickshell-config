@@ -47,7 +47,7 @@ Variants {
             mask: Region {
                 height: win.height - bar.implicitHeight - root.marginSize
                 intersection: Intersection.Xor
-                regions: regions.instances
+                regions: regions.instances.concat(menuMask)
                 width: win.width - root.marginSize * 2
                 x: root.marginSize
                 y: bar.implicitHeight
@@ -71,6 +71,19 @@ Variants {
                     x: modelData.x + root.marginSize
                     y: modelData.y + bar.implicitHeight
                 }
+            }
+
+            // Clickable area for the open menu-bar dropdown. Without this
+            // Subtract region the dropdown is only visual: clicks fall
+            // through the clickthrough mask to the app underneath.
+            Region {
+                id: menuMask
+
+                height: bar.menuRect.height > 0 ? bar.menuRect.height + 10 : 0
+                intersection: Intersection.Subtract
+                width: bar.menuRect.width > 0 ? bar.menuRect.width + 8 : 0
+                x: bar.menuRect.x - 4
+                y: bar.menuRect.y - 4
             }
 
             Rectangle {

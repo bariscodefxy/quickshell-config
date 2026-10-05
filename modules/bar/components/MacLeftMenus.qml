@@ -56,6 +56,81 @@ RowLayout {
         root.visibilities.searchText = text;
     }
 
+    function quitActiveApp(): void {
+        if (root.activeAppId)
+            Niri.closeAppWindows(root.activeAppId);
+        else
+            Niri.closeFocusedWindow();
+    }
+
+    function runItem(d: var): void {
+        if (!d)
+            return;
+        if (d.kind === "shell")
+            root.shellOut(d.arg);
+        else if (d.kind === "spawn")
+            Niri.spawn(d.arg);
+        else if (d.kind === "dir")
+            root.openDir(d.arg ?? "");
+        else if (d.kind === "launcher")
+            root.openLauncher(d.arg ?? "");
+        else if (d.kind === "settings")
+            root.visibilities.settings = true;
+        else if (d.kind === "quitapp")
+            root.quitActiveApp();
+        else if (d.kind === "niri")
+            root.runNiriAction(d.arg);
+    }
+
+    function runNiriAction(name: string): void {
+        if (name === "closeFocusedWindow")
+            Niri.closeFocusedWindow();
+        else if (name === "toggleOverview")
+            Niri.toggleOverview();
+        else if (name === "openOverview")
+            Niri.openOverview();
+        else if (name === "toggleFullscreen")
+            Niri.toggleFullscreen();
+        else if (name === "maximizeColumn")
+            Niri.maximizeColumn();
+        else if (name === "toggleFloating")
+            Niri.toggleFloating();
+        else if (name === "focusNextWindow")
+            Niri.focusNextWindow();
+        else if (name === "focusPrevWindow")
+            Niri.focusPrevWindow();
+        else if (name === "showHotkeyOverlay")
+            Niri.showHotkeyOverlay();
+    }
+
+    function withActions(descriptors: var): var {
+        return descriptors.map(d => {
+            if (d.separator === true)
+                return { separator: true };
+            return { label: d.label, shortcut: d.shortcut, action: () => root.runItem(d) };
+        });
+    }
+
+    function fileMenuItems(): var {
+        return root.withActions(AppMenus.fileItems(root.activeAppId));
+    }
+
+    function goMenuItems(): var {
+        return root.withActions(AppMenus.goItems(root.activeAppId));
+    }
+
+    // Window coordinates of the open dropdown, for the shell input mask.
+    function dropdownRect(target: Item): rect {
+        for (let i = 0; i < children.length; i++) {
+            const c = children[i];
+            if (c && c.menuName === root.openMenu && c.menuName !== undefined) {
+                const p = c.mapToItem(target, 0, c.height + 4);
+                return Qt.rect(p.x, p.y, c.dropdownWidth, c.dropdownHeight);
+            }
+        }
+        return Qt.rect(0, 0, 0, 0);
+    }
+
     Component.onCompleted: {
         activeToplevel = Qt.binding(() => {
             const trigger = ToplevelManager.activeToplevel;
@@ -115,7 +190,7 @@ RowLayout {
         items: [
             { label: `About ${root.appName}`, action: () => root.notifyAbout(`About ${root.appName}`, `${root.activeAppId || "Desktop"}\n${root.activeTitle || "No focused window"}`) },
             { separator: true },
-            { label: `Quit ${root.appName}`, shortcut: "⌘Q", action: () => Niri.closeFocusedWindow() }
+            { label: `Quit ${root.appName}`, shortcut: "⌘Q", action: () => root.quitActiveApp() }
         ]
 
         onCloseRequested: root.closeRequested()
@@ -127,13 +202,7 @@ RowLayout {
         titleText: "File"
         openMenu: root.openMenu
         dropdownWidth: 250
-        items: [
-            { label: "New Finder Window", shortcut: "⌘N", action: () => root.shellOut("thunar ~") },
-            { label: "New Folder", shortcut: "⇧⌘N", action: () => root.shellOut("mkdir -p ~/'Untitled Folder' && thunar ~") },
-            { label: "Open…", shortcut: "⌘O", action: () => root.shellOut("thunar ~") },
-            { separator: true },
-            { label: "Close Window", shortcut: "⌘W", action: () => Niri.closeFocusedWindow() }
-        ]
+        items: root.fileMenuItems()
 
         onCloseRequested: root.closeRequested()
         onOpenRequested: name => root.openRequested(name)
@@ -176,13 +245,7 @@ RowLayout {
         titleText: "Go"
         openMenu: root.openMenu
         dropdownWidth: 220
-        items: [
-            { label: "Home", shortcut: "⇧⌘H", action: () => root.openDir("") },
-            { label: "Documents", action: () => root.openDir("Documents") },
-            { label: "Downloads", action: () => root.openDir("Downloads") },
-            { label: "Music", action: () => root.openDir("Music") },
-            { label: "Pictures", action: () => root.openDir("Pictures") }
-        ]
+        items: root.goMenuItems()
 
         onCloseRequested: root.closeRequested()
         onOpenRequested: name => root.openRequested(name)

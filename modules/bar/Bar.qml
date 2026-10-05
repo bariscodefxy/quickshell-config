@@ -19,6 +19,11 @@ Item {
 
     property string openMenu: ""
 
+    // Geometry of the open menu dropdown in window coordinates. The shell
+    // input mask needs it: without a mask region, clicks on the dropdown
+    // fall through to the app underneath.
+    readonly property rect openDropdownRect: openMenu === "" ? Qt.rect(0, 0, 0, 0) : leftMenus.dropdownRect(root)
+
     function closeMenus(): void {
         root.openMenu = "";
     }
@@ -47,6 +52,8 @@ Item {
 
         // Left side: macOS menu bar
         MacLeftMenus {
+            id: leftMenus
+
             Layout.alignment: Qt.AlignVCenter
             Layout.leftMargin: 12
 

@@ -23,6 +23,9 @@ Item {
     function closeMenus(): void {
         content.item?.closeMenus();
     }
+
+    // Open menu dropdown geometry for the shell input mask.
+    readonly property rect menuRect: content.item?.openDropdownRect ?? Qt.rect(0, 0, 0, 0)
     implicitHeight: root.contentHeight
     visible: true
 

@@ -18,6 +18,9 @@ Item {
     property real titleIconSize: 14
     property int dropdownWidth: 250
 
+    // Full dropdown height incl. padding (for the shell input mask).
+    readonly property real dropdownHeight: listContent.height + 12
+
     signal closeRequested()
     signal openRequested(string name)
 
