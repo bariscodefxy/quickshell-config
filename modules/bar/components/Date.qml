@@ -32,6 +32,6 @@ Rectangle {
         anchors.centerIn: parent
         color: Foundations.glass.barText
         font.family: Foundations.font.family.sans
-        text: Time.format("ddd h:mm AP")
+        text: Time.format(Settings.clock24h ? "ddd HH:mm" : "ddd h:mm AP")
     }
 }

@@ -21,6 +21,8 @@ Rectangle {
     readonly property int margin: Foundations.spacing.s
     readonly property int iconSpacing: Foundations.spacing.xxs
 
+    signal popoutRequested(string name, var anchor)
+
     clip: true
     color: "transparent"
     implicitHeight: height
@@ -41,9 +43,13 @@ Rectangle {
 
         // Audio icon
         WrappedLoader {
+            active: Settings.showAudio
             name: "audio"
+            visible: Settings.showAudio
 
             sourceComponent: RowLayout {
+                id: audioRow
+
                 spacing: iconSpacing
 
                 Rectangle {
@@ -69,7 +75,7 @@ Rectangle {
                     size: 17
 
                     onClicked: {
-                        Quickshell.execDetached(["pavucontrol"]);
+                        root.popoutRequested("audio", audioRow);
                     }
                 }
             }
@@ -77,12 +83,15 @@ Rectangle {
 
         // Keyboard layout icon
         WrappedLoader {
+            active: Settings.showKbLayout
             name: "kblayout"
+            visible: Settings.showKbLayout
 
             sourceComponent: ClickableIcon {
+                id: kbClick
+
                 onClicked: {
-                    const nextIndex = (Niri.currentKbLayoutIndex + 1) % Niri.kbLayouts.length;
-                    Niri.switchKbLayout(nextIndex);
+                    root.popoutRequested("kblayout", kbClick);
                 }
 
                 Text.BodyM {
@@ -95,10 +104,16 @@ Rectangle {
 
         // Network icon
         WrappedLoader {
+            active: Settings.showNetwork
             name: "network"
+            visible: Settings.showNetwork
 
             sourceComponent: ClickableIcon {
-                onClicked: Network.toggleWifi()
+                id: netClick
+
+                onClicked: {
+                    root.popoutRequested("network", netClick);
+                }
 
                 MacIcon {
                     color: root.colour
@@ -110,10 +125,16 @@ Rectangle {
 
         // VPN icon
         WrappedLoader {
+            active: Settings.showVpn
             name: "vpn"
+            visible: Settings.showVpn
 
             sourceComponent: ClickableIcon {
-                onClicked: OpenVPN.toggle()
+                id: vpnClick
+
+                onClicked: {
+                    root.popoutRequested("vpn", vpnClick);
+                }
 
                 Item {
                     id: vpnState
@@ -178,17 +199,19 @@ Rectangle {
 
         // Bluetooth section
         WrappedLoader {
+            active: Settings.showBluetooth
             name: "bluetooth"
+            visible: Settings.showBluetooth
 
             sourceComponent: RowLayout {
                 spacing: iconSpacing
 
                 // Bluetooth icon (clickable to toggle)
                 ClickableIcon {
+                    id: btClick
+
                     onClicked: {
-                        if (Bluetooth.defaultAdapter) {
-                            Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled;
-                        }
+                        root.popoutRequested("bluetooth", btClick);
                     }
 
                     MacIcon {
@@ -236,10 +259,16 @@ Rectangle {
 
         // Battery icon
         WrappedLoader {
+            active: Settings.showBattery
             name: "battery"
+            visible: Settings.showBattery
 
             sourceComponent: ClickableIcon {
-                onClicked: Quickshell.execDetached(["gnome-power-statistics"])
+                id: battClick
+
+                onClicked: {
+                    root.popoutRequested("battery", battClick);
+                }
 
                 Item {
                     height: 18

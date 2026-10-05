@@ -21,6 +21,8 @@ Rectangle {
     radius: Foundations.radius.all
     visible: width > 0 && height > 0
 
+    signal menuRequested(int index, var anchor)
+
     Behavior on implicitWidth {
         BasicNumberAnimation {
         }
@@ -58,6 +60,7 @@ Rectangle {
                 id: iconButton
 
                 required property SystemTrayItem modelData
+                required property int index
 
                 buttonColor: "transparent"
                 buttonSize: root.buttonSize
@@ -75,7 +78,10 @@ Rectangle {
                 }
 
                 onClicked: {
-                    iconButton.modelData.activate();
+                    if (iconButton.modelData.menu)
+                        root.menuRequested(iconButton.index, iconButton);
+                    else
+                        iconButton.modelData.activate();
                 }
                 onHovered: {
                     iconButton.modelData.secondaryActivate();

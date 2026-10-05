@@ -90,6 +90,8 @@ RowLayout {
         openMenu: root.openMenu
         dropdownWidth: 240
         items: [
+            { label: "System Settings…", action: () => root.visibilities.settings = true },
+            { separator: true },
             { label: "About This Mac", action: () => Niri.spawn("alacritty -e fastfetch") },
             { separator: true },
             { label: "Lock Screen", action: () => root.shellOut("swaylock") },

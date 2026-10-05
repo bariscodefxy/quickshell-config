@@ -23,42 +23,19 @@ Item {
         root.openMenu = "";
     }
 
-    function checkPopout(x: real): void {
-        const ch = mainLayout.childAt(x, height / 2) as WrappedLoader;
-        if (!ch) {
-            return;
-        }
+    function closePopout(): void {
+        popouts.hasCurrent = false;
+        popouts.currentName = "";
+    }
 
-        const id = ch.id;
-        const left = ch.x;
-        const item = ch.item;
-        const itemWidth = item.implicitWidth;
-
-        if (id === "statusIcons") {
-            const items = item.items;
-            const icon = items.childAt(mapToItem(items, x, 0).x, items.height / 2);
-            if (icon) {
-                root.openMenu = "";
-                popouts.currentName = icon.name;
-                popouts.currentCenter = Qt.binding(() => icon.mapToItem(root, icon.implicitWidth / 2, 0).x);
-                popouts.hasCurrent = true;
-            }
-        } else if (id === "tray") {
-            const index = Math.floor(((x - left) / itemWidth) * item.items.count);
-            const trayItem = item.items.itemAt(index);
-            if (trayItem) {
-                root.openMenu = "";
-                popouts.currentName = `traymenu${index}`;
-                popouts.currentCenter = Qt.binding(() => trayItem.mapToItem(root, trayItem.implicitWidth / 2, 0).x);
-                popouts.hasCurrent = true;
-            }
-        } else if (id === "date") {
-            root.openMenu = "";
-            popouts.currentName = "calendar";
-            popouts.currentCenter = Qt.binding(() => item.mapToItem(root, item.implicitWidth / 2, 0).x);
-            popouts.hasCurrent = true;
+    function togglePopout(name: string, anchor: Item): void {
+        if (popouts.currentName === name && popouts.hasCurrent) {
+            root.closePopout();
         } else {
-            popouts.hasCurrent = false;
+            root.openMenu = "";
+            popouts.currentName = name;
+            popouts.currentCenter = Qt.binding(() => anchor.mapToItem(root, anchor.width / 2, 0).x);
+            popouts.hasCurrent = true;
         }
     }
 
@@ -78,29 +55,33 @@ Item {
             visibilities: root.visibilities
 
             onCloseRequested: root.openMenu = ""
-            onOpenRequested: name => root.openMenu = name
+            onOpenRequested: name => {
+                root.openMenu = name;
+                root.closePopout();
+            }
         }
 
         // Center spacer
         WrappedLoader {
-            id: spacer
-
             Layout.fillWidth: true
         }
 
         // Right side items
         WrappedLoader {
-            id: tray
+            active: Settings.showTray
+            visible: Settings.showTray
 
             sourceComponent: Tray {
                 height: root.innerHeight
+
+                onMenuRequested: (index, anchor) => root.togglePopout(`traymenu${index}`, anchor)
             }
         }
         WrappedLoader {
-            id: statusIcons
-
             sourceComponent: StatusIcons {
                 height: root.innerHeight
+
+                onPopoutRequested: (name, anchor) => root.togglePopout(name, anchor)
             }
         }
         MacIcon {
@@ -110,6 +91,7 @@ Item {
             color: Foundations.glass.barIcon
             name: "magnifier"
             size: 15
+            visible: Settings.showSpotlight
 
             onClicked: {
                 if (root.visibilities.launcher)
@@ -123,6 +105,9 @@ Item {
         }
         WrappedLoader {
             id: date
+
+            active: Settings.showDate
+            visible: Settings.showDate
 
             sourceComponent: Date {
                 height: root.innerHeight
@@ -141,14 +126,10 @@ Item {
             }
         }
         WrappedLoader {
-            id: idleInhibitor
-
             sourceComponent: IdleInhibitor {
             }
         }
         WrappedLoader {
-            id: notificationToggle
-
             Layout.rightMargin: 10
 
             sourceComponent: NotificationListToggle {
@@ -160,17 +141,17 @@ Item {
     Connections {
         function onLauncherChanged(): void {
             root.openMenu = "";
+            root.closePopout();
         }
         function onNotificationsChanged(): void {
             root.openMenu = "";
+            root.closePopout();
         }
 
         target: root.visibilities
     }
 
     component WrappedLoader: Loader {
-        property string id
-
         Layout.alignment: Qt.AlignVCenter
         active: true
         visible: true

@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import qs.ds
 import qs.ds.icons
+import qs.services
 import QtQuick
 
 Item {
@@ -95,7 +96,7 @@ Item {
         width: root.dropdownWidth
         height: listContent.height + 12
         radius: 8
-        color: Qt.alpha(Foundations.glass.menuBg, Foundations.glass.menuOpacity)
+        color: Qt.alpha(Foundations.glass.menuBg, Settings.glassMenuOpacity())
         border.width: 1
         border.color: Qt.alpha("#000000", 0.12)
         z: 100

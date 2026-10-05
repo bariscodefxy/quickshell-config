@@ -39,8 +39,10 @@ MouseArea {
     anchors.fill: parent
     hoverEnabled: true
 
-    onPressed: {
+    onPressed: event => {
         bar.closeMenus();
+        if (event.y > bar.implicitHeight && !inTopPanel(panels.popouts, event.x, event.y))
+            popouts.hasCurrent = false;
     }
 
     onContainsMouseChanged: {
@@ -57,10 +59,8 @@ MouseArea {
             return;
         }
 
-        // Show popouts on hover
-        if (y < bar.implicitHeight)
-            bar.checkPopout(x);
-        else if (!popouts.currentName.startsWith("traymenu") && !inTopPanel(panels.popouts, x, y))
+        // Popouts open on click now; hovering away from them closes them
+        if (y >= bar.implicitHeight && !popouts.currentName.startsWith("traymenu") && !inTopPanel(panels.popouts, x, y))
             popouts.hasCurrent = false;
     }
 

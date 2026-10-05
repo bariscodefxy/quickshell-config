@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs.ds
+import qs.services
 import qs.modules.popups as BarPopouts
 import Quickshell
 import QtQuick
@@ -19,9 +20,6 @@ Item {
     required property int margin
     required property int barHeight
 
-    function checkPopout(x: real): void {
-        content.item?.checkPopout(x);
-    }
     function closeMenus(): void {
         content.item?.closeMenus();
     }
@@ -30,7 +28,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: Qt.alpha(Foundations.glass.barBg, Foundations.glass.barOpacity)
+        color: Qt.alpha(Foundations.glass.barBg, Settings.glassBarOpacity())
     }
 
     Rectangle {

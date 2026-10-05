@@ -26,7 +26,7 @@ Item {
         anchors.fill: parent
         fillMode: Image.PreserveAspectFit
         mipmap: true
-        source: Qt.resolvedUrl(`macos/${name}.svg`)
+        source: root.name !== "" ? Qt.resolvedUrl(`macos/${name}.svg`) : ""
         sourceSize.height: 64
         sourceSize.width: 64
         visible: false
