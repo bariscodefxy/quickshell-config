@@ -175,6 +175,13 @@ RowLayout {
         return root.withActions(AppMenus.goItems(root.activeAppId));
     }
 
+    onActiveToplevelChanged: {
+        // Clicking into an app window passes through the clickthrough mask,
+        // so dismiss open menus on focus change (macOS behavior).
+        if (root.openMenu !== "")
+            root.closeRequested();
+    }
+
     Component.onCompleted: {
         activeToplevel = Qt.binding(() => {
             const trigger = ToplevelManager.activeToplevel;

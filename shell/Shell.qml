@@ -66,21 +66,21 @@ Variants {
                     required property Item modelData
 
                     height: modelData.visible ? modelData.height : 0
-                    intersection: Intersection.Subtract
+                    intersection: Intersection.Combine
                     width: modelData.visible ? modelData.width : 0
                     x: modelData.x + root.marginSize
                     y: modelData.y + bar.implicitHeight
                 }
             }
 
-            // Clickable area for the open menu-bar dropdown. Without this
-            // Subtract region the dropdown is only visual: clicks fall
-            // through the clickthrough mask to the app underneath.
+            // Clickable area for the open menu-bar dropdown: unioned into the
+            // shell input region (the Xor base passes everything else
+            // through to the app underneath).
             Region {
                 id: menuMask
 
                 height: bar.menuGeo.height
-                intersection: Intersection.Subtract
+                intersection: Intersection.Combine
                 width: bar.menuGeo.width
                 x: bar.menuGeo.x
                 y: bar.menuGeo.y
