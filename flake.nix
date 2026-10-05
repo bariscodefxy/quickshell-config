@@ -212,6 +212,7 @@
               --prefix PATH : "${
                 pkgs.lib.makeBinPath [
                   pkgs.cliphist
+                  pkgs.swww
                   pkgs.wl-clipboard
                 ]
               }" \

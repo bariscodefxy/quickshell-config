@@ -21,22 +21,22 @@ Singleton {
     }
 
     component ColorBase16: QtObject {
-        property color base00: "#303446";
-        property color base01: "#292c3c";
-        property color base02: "#414559";
-        property color base03: "#51576d";
-        property color base04: "#626880";
-        property color base05: "#c6d0f5";
-        property color base06: "#f2d5cf";
-        property color base07: "#babbf1";
-        property color base08: "#e78284";
-        property color base09: "#ef9f76";
-        property color base0A: "#e5c890";
-        property color base0B: "#a6d189";
-        property color base0C: "#81c0c8";
-        property color base0D: "#8caaee";
-        property color base0E: "#a57fbd";
-        property color base0F: "#ca9ee6";
+        property color base00: "#1c1c22";
+        property color base01: "#232329";
+        property color base02: "#2e2e38";
+        property color base03: "#48484e";
+        property color base04: "#98989d";
+        property color base05: "#f5f5f7";
+        property color base06: "#ffffff";
+        property color base07: "#e8e8ed";
+        property color base08: "#ff453a";
+        property color base09: "#ff9f0a";
+        property color base0A: "#ffd60a";
+        property color base0B: "#30d158";
+        property color base0C: "#64d2ff";
+        property color base0D: "#0a84ff";
+        property color base0E: "#bf5af2";
+        property color base0F: "#ff375f";
     }
 
     component Duration: QtObject {

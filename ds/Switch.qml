@@ -7,11 +7,11 @@ Switch {
     id: root
 
     property color activeBorderColor: activeColor
-    property color activeColor: Foundations.palette.base05
-    property color activeThumbColor: Foundations.palette.base03
-    property color inactiveBorderColor: Foundations.palette.base0D
-    property color inactiveColor: Foundations.palette.base04
-    property color inactiveThumbColor: Foundations.palette.base0D
+    property color activeColor: "#30d158"
+    property color activeThumbColor: "#ffffff"
+    property color inactiveBorderColor: inactiveColor
+    property color inactiveColor: "#48484e"
+    property color inactiveThumbColor: "#ffffff"
 
     implicitHeight: 25
     implicitWidth: 41
