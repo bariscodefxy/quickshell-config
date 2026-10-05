@@ -29,11 +29,11 @@ Singleton {
     property var pinned: ["thunar", "chromium-browser", "code", "Alacritty"]
 
     function glassBarOpacity(): real {
-        return 0.35 + root.glass * 0.6;
+        return 0.15 + root.glass * 0.6;
     }
 
     function glassMenuOpacity(): real {
-        return 0.55 + root.glass * 0.4;
+        return 0.3 + root.glass * 0.5;
     }
 
     function expandHome(path: string): string {
