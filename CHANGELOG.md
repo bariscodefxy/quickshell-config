@@ -8,6 +8,7 @@ on release/tag.
 
 - `feat`: system icon theme throughout the shell — `//@ pragma IconTheme MacTahoe-dark` so dock/launcher/tray app icons resolve from the theme; new `ThemeIcon` component renders theme glyphs tinted to shell colors with bundled-SVG fallback; bar status icons (volume, mic, network, VPN, bluetooth, battery, spotlight, bell, moon) and dock settings/trash now come from the theme.
 
+- `fix`: input-mask Subtract regions restored so dock/settings/popouts/launcher receive clicks after the menu-window split.
 - `fix`: menu-bar dropdowns are clickable now — the dropdown is its own layer window (`shell/MenuWindow.qml`, no mask, no overflow) instead of an overflowing child of the 28px bar, which Qt never hit-tests. (Earlier attempts via input-mask regions failed: `Subtract` can never add clickable areas and dynamic mask updates proved unreliable.)
 - `feat`: app-specific File/Go menus — File and Go rebuild from the focused app (browser: new/incognito window, history, bookmarks…; terminal/editor: new window, open folder…; chat/media/files: matching folders and actions); app-menu Quit now closes all of the app's windows. Note: Wayland has no menubar-export protocol, so items are per-app action maps, not the app's internal menus.
 - `feat`: liquid-glass menu bar + dropdowns — frosted base with top-down sheen, specular top edge, drop shadow and rounded (12px) menus with taller items; bar/menu opacity floors raised since no compositor blur is available. All left menus (/app/File/Edit/View/Go/Window/Help) verified against real binaries and niri actions.
