@@ -185,6 +185,22 @@ Scope {
     }
 
     IpcHandler {
+        function close(): void {
+            Visibilities.getForActive().settings = false;
+        }
+        function open(): void {
+            const visibilities = Visibilities.getForActive();
+            visibilities.settings = true;
+        }
+        function toggle(): void {
+            const visibilities = Visibilities.getForActive();
+            visibilities.settings = !visibilities.settings;
+        }
+
+        target: "settings"
+    }
+
+    IpcHandler {
         function current(): string {
             const ws = Niri.workspaces;
             const focused = ws?.[Niri.focusedWorkspaceIndex];

@@ -1,6 +1,7 @@
 import qs.ds
 import qs.modules.notifications as NotificationsList
 import qs.modules.launcher as Launcher
+import qs.modules.settings as Settings
 import qs.modules.popups as Popups
 import Quickshell
 import QtQuick
@@ -11,6 +12,7 @@ Item {
     required property Item bar
     readonly property Launcher.Wrapper launcher: launcher
     readonly property NotificationsList.Wrapper notifications: notifications
+    readonly property Settings.Wrapper settings: settings
     readonly property Popups.Wrapper popouts: popouts
     required property ShellScreen screen
     required property PersistentProperties visibilities
@@ -34,6 +36,14 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         panels: root
+        visibilities: root.visibilities
+    }
+    Settings.Wrapper {
+        id: settings
+
+        anchors.centerIn: parent
+        panels: root
+        screen: root.screen
         visibilities: root.visibilities
     }
     Popups.Wrapper {

@@ -113,10 +113,11 @@ Variants {
                 property bool bar
                 property bool launcher
                 property bool notifications
+                property bool settings
                 property string searchText: ""
                 property var launcherList: null
 
-                readonly property bool captureKeyboard: launcher | notifications | panels.popouts.needsFocus
+                readonly property bool captureKeyboard: launcher | notifications | settings | panels.popouts.needsFocus
 
                 Component.onCompleted: Visibilities.load(scope.modelData, this)
             }
