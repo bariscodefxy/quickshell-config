@@ -40,5 +40,13 @@ Item {
             anchors.topMargin: root.bar.implicitHeight
             radius: root.radius
         }
+
+        // macOS menu bar is full-bleed: spare its strip from the dark overlay
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            height: root.bar.implicitHeight
+        }
     }
 }

@@ -19,6 +19,19 @@ Singleton {
             return "keyboard";
         return "bluetooth";
     }
+    function getMacBluetoothIcon(icon: string): string {
+        if (icon.includes("headset") || icon.includes("headphones"))
+            return "headphones";
+        if (icon.includes("audio"))
+            return "volume-mute";
+        if (icon.includes("phone"))
+            return "smartphone";
+        if (icon.includes("mouse"))
+            return "mouse";
+        if (icon.includes("keyboard"))
+            return "keyboard";
+        return "bluetooth";
+    }
     function getMicVolumeIcon(volume: real, isMuted: bool): string {
         if (!isMuted && volume > 0)
             return "mic";
@@ -34,6 +47,15 @@ Singleton {
         if (strength >= 0.2)
             return "network_wifi_1_bar";
         return "signal_wifi_0_bar";
+    }
+    function getMacNetworkIcon(strength: real, hasEthernet: bool, connected: bool): string {
+        if (hasEthernet)
+            return "ethernet";
+        if (!connected)
+            return "wifi-off";
+        if (strength >= 0.4)
+            return "wifi";
+        return "wifi-low";
     }
     function getNotifIcon(summary: string): string {
         summary = summary.toLowerCase();
@@ -71,5 +93,14 @@ Singleton {
         if (volume > 0)
             return "volume_down";
         return "volume_mute";
+    }
+    function getMacVolumeIcon(volume: real, isMuted: bool): string {
+        if (isMuted)
+            return "volume-off";
+        if (volume >= 0.5)
+            return "volume-high";
+        if (volume > 0)
+            return "volume-low";
+        return "volume-mute";
     }
 }

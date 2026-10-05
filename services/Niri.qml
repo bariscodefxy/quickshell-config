@@ -23,6 +23,108 @@ Singleton {
         return "";
     }
 
+    // Map an xkb layout description (as reported by `niri msg keyboard-layouts`,
+    // e.g. "Turkish", "English (US)", "German (Neo)") to a 2-letter display code.
+    // Falls back to the first two latin letters, "??" when nothing usable found.
+    function kbLayoutShortName(fullName: string): string {
+        if (!fullName)
+            return "??";
+
+        const n = fullName.trim().toLowerCase();
+
+        // Already a short xkb code ("tr", "us", "ara", ...): normalize to 2 letters.
+        if (/^[a-z]{2,3}$/.test(n)) {
+            const codeAliases = {
+                "ara": "ar",
+                "bra": "pt",
+                "cz": "cs",
+                "gb": "en",
+                "gr": "el",
+                "jp": "ja",
+                "kr": "ko",
+                "us": "en"
+            };
+            if (n in codeAliases)
+                return codeAliases[n];
+            return n.length === 3 ? n.slice(0, 2) : n;
+        }
+
+        // Language description -> ISO 639-1. Ordered so specific variants match first.
+        const table = [
+            ["turkish", "tr"],
+            ["english", "en"],
+            ["spanish", "es"],
+            ["german", "de"],
+            ["deutsch", "de"],
+            ["french", "fr"],
+            ["italian", "it"],
+            ["portuguese", "pt"],
+            ["brazilian", "pt"],
+            ["russian", "ru"],
+            ["ukrainian", "uk"],
+            ["belarusian", "be"],
+            ["polish", "pl"],
+            ["czech", "cs"],
+            ["slovak", "sk"],
+            ["dutch", "nl"],
+            ["swedish", "sv"],
+            ["norwegian", "no"],
+            ["danish", "da"],
+            ["finnish", "fi"],
+            ["hungarian", "hu"],
+            ["romanian", "ro"],
+            ["bulgarian", "bg"],
+            ["greek", "el"],
+            ["hebrew", "he"],
+            ["arabic", "ar"],
+            ["persian", "fa"],
+            ["farsi", "fa"],
+            ["thai", "th"],
+            ["chinese", "zh"],
+            ["japanese", "ja"],
+            ["korean", "ko"],
+            ["croatian", "hr"],
+            ["serbian", "sr"],
+            ["slovenian", "sl"],
+            ["bosnian", "bs"],
+            ["albanian", "sq"],
+            ["lithuanian", "lt"],
+            ["latvian", "lv"],
+            ["estonian", "et"],
+            ["icelandic", "is"],
+            ["irish", "ga"],
+            ["maltese", "mt"],
+            ["georgian", "ka"],
+            ["armenian", "hy"],
+            ["azerbaijani", "az"],
+            ["kazakh", "kk"],
+            ["uzbek", "uz"],
+            ["vietnamese", "vi"],
+            ["hindi", "hi"],
+            ["bengali", "bn"],
+            ["tamil", "ta"],
+            ["nepali", "ne"],
+            ["indonesian", "id"],
+            ["malay", "ms"],
+            ["swiss", "de"],
+            ["belgian", "nl"],
+            ["canadian", "en"],
+            ["australian", "en"]
+        ];
+        for (let i = 0; i < table.length; i++) {
+            if (n.includes(table[i][0]))
+                return table[i][1];
+        }
+
+        // Parenthesized xkb code, e.g. "English (US)" without table hit.
+        const paren = n.match(/\(([a-z]{2,3})\)/);
+        if (paren)
+            return root.kbLayoutShortName(paren[1]);
+
+        const m = fullName.match(/[A-Za-z]{2,}/);
+        return m ? m[0].slice(0, 2).toLowerCase() : "??";
+    }
+
     function getWindowByAppId(appId: string, callback: var, titleHint: string): void {
         const hint = titleHint || "";
         getWindowIdProcess.running = false;
@@ -60,6 +162,66 @@ Singleton {
         moveWindowProcess.command = ["niri", "msg", "action", "move-window-to-workspace", "--focus", "false", workspaceIdx.toString()];
         moveWindowProcess.running = false;
         moveWindowProcess.running = true;
+    }
+
+    function closeFocusedWindow(): void {
+        closeWindowProcess.command = ["niri", "msg", "action", "close-window"];
+        closeWindowProcess.running = false;
+        closeWindowProcess.running = true;
+    }
+
+    function toggleFullscreen(): void {
+        fullscreenProcess.command = ["niri", "msg", "action", "fullscreen-window"];
+        fullscreenProcess.running = false;
+        fullscreenProcess.running = true;
+    }
+
+    function toggleOverview(): void {
+        overviewProcess.command = ["niri", "msg", "action", "toggle-overview"];
+        overviewProcess.running = false;
+        overviewProcess.running = true;
+    }
+
+    function openOverview(): void {
+        openOverviewProcess.command = ["niri", "msg", "action", "open-overview"];
+        openOverviewProcess.running = false;
+        openOverviewProcess.running = true;
+    }
+
+    function focusNextWindow(): void {
+        focusNextProcess.command = ["niri", "msg", "action", "focus-window-down"];
+        focusNextProcess.running = false;
+        focusNextProcess.running = true;
+    }
+
+    function focusPrevWindow(): void {
+        focusPrevProcess.command = ["niri", "msg", "action", "focus-window-up"];
+        focusPrevProcess.running = false;
+        focusPrevProcess.running = true;
+    }
+
+    function maximizeColumn(): void {
+        maximizeProcess.command = ["niri", "msg", "action", "maximize-column"];
+        maximizeProcess.running = false;
+        maximizeProcess.running = true;
+    }
+
+    function toggleFloating(): void {
+        floatingProcess.command = ["niri", "msg", "action", "toggle-window-floating"];
+        floatingProcess.running = false;
+        floatingProcess.running = true;
+    }
+
+    function showHotkeyOverlay(): void {
+        hotkeyProcess.command = ["niri", "msg", "action", "show-hotkey-overlay"];
+        hotkeyProcess.running = false;
+        hotkeyProcess.running = true;
+    }
+
+    function quitCompositor(): void {
+        quitProcess.command = ["niri", "msg", "action", "quit", "--skip-confirmation"];
+        quitProcess.running = false;
+        quitProcess.running = true;
     }
 
     Component.onCompleted: {
@@ -233,6 +395,66 @@ Singleton {
 
     Process {
         id: focusWindowProcess
+
+        running: false
+    }
+
+    Process {
+        id: closeWindowProcess
+
+        running: false
+    }
+
+    Process {
+        id: fullscreenProcess
+
+        running: false
+    }
+
+    Process {
+        id: overviewProcess
+
+        running: false
+    }
+
+    Process {
+        id: openOverviewProcess
+
+        running: false
+    }
+
+    Process {
+        id: focusNextProcess
+
+        running: false
+    }
+
+    Process {
+        id: focusPrevProcess
+
+        running: false
+    }
+
+    Process {
+        id: maximizeProcess
+
+        running: false
+    }
+
+    Process {
+        id: floatingProcess
+
+        running: false
+    }
+
+    Process {
+        id: hotkeyProcess
+
+        running: false
+    }
+
+    Process {
+        id: quitProcess
 
         running: false
     }

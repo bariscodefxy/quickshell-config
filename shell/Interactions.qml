@@ -39,6 +39,10 @@ MouseArea {
     anchors.fill: parent
     hoverEnabled: true
 
+    onPressed: {
+        bar.closeMenus();
+    }
+
     onContainsMouseChanged: {
         if (!containsMouse) {
             popouts.hasCurrent = false;

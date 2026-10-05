@@ -43,5 +43,5 @@ Bar/launcher icons need **Material Symbols Rounded** plus a Nerd Font. The wrapp
 
 - Conventional commits with `feat:` / `fix:` / `chore:` prefixes, on `main`.
 - `keepass.json` (age identity + encrypted password for the KeePassXC launcher) is a secret: never commit a real one, never print its contents. The build tolerates its absence (writes `{}`).
-- After any user-visible change, append a line under `## [Unreleased]` in `CHANGELOG.md` — it is the shared memory across agent sessions. Move entries to a dated section only when cutting a release/tag.
+- After any user-visible change, append a line under `## [Unreleased]` in `CHANGELOG.md` — it is the shared memory across agent sessions. Move entries to a dated section only when cutting a release/tag. `CHANGELOG.md` is always kept in English.
 - Compositor, system theme, fonts, and portal config live in `~/nix-config`, not here. Changes that only take effect there (rebuild/switch/relogin) must be called out explicitly.

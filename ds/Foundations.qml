@@ -11,6 +11,8 @@ Singleton {
     }
     property Font font: Font {
     }
+    property Glass glass: Glass {
+    }
     property ColorBase16 palette: ColorBase16 {
     }
     property Radius radius: Radius {
@@ -43,6 +45,20 @@ Singleton {
         property int fast: 200
         property int fastest: 50
         property int zero: 0
+    }
+    component Glass: QtObject {
+        property color barBg: "#f2f2f4"
+        property real barOpacity: 0.72
+        property color barText: "#1d1d1f"
+        property color barIcon: "#424245"
+        property color barHairline: "#c6c6c8"
+        property color menuBg: "#f5f5f7"
+        property real menuOpacity: 0.92
+        property color menuText: "#1d1d1f"
+        property color menuHover: "#0a84ff"
+        property color menuHoverText: "#ffffff"
+        property color menuSeparator: "#d4d4d8"
+        property color menuShortcut: "#86868b"
     }
     component Font: QtObject {
         property FontFamily family: FontFamily {

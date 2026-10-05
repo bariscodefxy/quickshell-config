@@ -13,7 +13,7 @@ Rectangle {
     property int margin: Foundations.spacing.s
 
     clip: true
-    color: Foundations.palette.base02
+    color: "transparent"
     implicitWidth: dateText.implicitWidth + margin * 2
     implicitHeight: height
     radius: Foundations.radius.all
@@ -30,8 +30,8 @@ Rectangle {
         id: dateText
 
         anchors.centerIn: parent
-        color: Foundations.palette.base0D
-        font.family: Foundations.font.family.mono
-        text: Time.format("ddd dd MMM  HH:mm")
+        color: Foundations.glass.barText
+        font.family: Foundations.font.family.sans
+        text: Time.format("ddd h:mm AP")
     }
 }

@@ -16,13 +16,13 @@ import qs.ds.animations
 Rectangle {
     id: root
 
-    property color colour: Foundations.palette.base0D
+    property color colour: Foundations.glass.barIcon
     readonly property alias items: iconRow
     readonly property int margin: Foundations.spacing.s
     readonly property int iconSpacing: Foundations.spacing.xxs
 
     clip: true
-    color: Foundations.palette.base02
+    color: "transparent"
     implicitHeight: height
     implicitWidth: iconRow.implicitWidth + margin * 2
     radius: Foundations.radius.all
@@ -46,27 +46,27 @@ Rectangle {
             sourceComponent: RowLayout {
                 spacing: iconSpacing
 
-                MaterialFontIcon {
-                    animate: true
-                    color: root.colour
-                    text: "screen_record"
+                Rectangle {
+                    Layout.alignment: Qt.AlignVCenter
+                    color: "#ff9500"
+                    height: 8
+                    radius: 4
                     visible: ScreenShare.isSharing
+                    width: 8
                 }
 
-                MaterialFontIcon {
-                    animate: true
+                MacIcon {
                     color: root.colour
-                    text: "mic_off"
+                    name: "mic-off"
+                    size: 15
                     visible: Audio.sourceMuted
                 }
 
-                IconButton {
-                    buttonColor: "transparent"
-                    focusColor: "transparent"
-                    iconColor: root.colour
-                    icon: Services.IconsService.getVolumeIcon(Audio.volume, Audio.muted)
-                    buttonSize: Foundations.font.size.xl
-                    iconPointSize: Foundations.font.size.m
+                MacIcon {
+                    clickable: true
+                    color: root.colour
+                    name: Services.IconsService.getMacVolumeIcon(Audio.volume, Audio.muted)
+                    size: 17
 
                     onClicked: {
                         Quickshell.execDetached(["pavucontrol"]);
@@ -88,18 +88,7 @@ Rectangle {
                 Text.BodyM {
                     color: root.colour
                     font.family: Foundations.font.family.mono
-                    text: {
-                        const fullName = Niri.currentKbLayoutName();
-                        if (!fullName)
-                            return "??";
-
-                        if (fullName.includes("Spanish"))
-                            return "ES";
-                        if (fullName.includes("English"))
-                            return "US";
-
-                        return "??";
-                    }
+                    text: Niri.kbLayoutShortName(Niri.currentKbLayoutName())
                 }
             }
         }
@@ -111,16 +100,10 @@ Rectangle {
             sourceComponent: ClickableIcon {
                 onClicked: Network.toggleWifi()
 
-                MaterialFontIcon {
-                    animate: true
+                MacIcon {
                     color: root.colour
-                    text: {
-                        if (Network.hasEthernetConnection)
-                            return "lan";
-                        if (Network.active)
-                            return Services.IconsService.getNetworkIcon(Network.active.signalStrength ?? 0);
-                        return "wifi_off";
-                    }
+                    name: Services.IconsService.getMacNetworkIcon(Network.active?.signalStrength ?? 0, Network.hasEthernetConnection, Network.active != null)
+                    size: 17
                 }
             }
         }
@@ -135,30 +118,27 @@ Rectangle {
                 Item {
                     id: vpnState
 
-                    implicitWidth: vpnIcon.implicitWidth
-                    implicitHeight: vpnIcon.implicitHeight
+                    height: 16
+                    width: 16
 
                     readonly property bool anyConnected: OpenVPN.connected || Tailscale.connected
                     readonly property bool anyConnecting: OpenVPN.connecting || Tailscale.connecting
 
-                    MaterialFontIcon {
+                    MacIcon {
                         id: vpnIcon
-                        animate: true
+
+                        anchors.centerIn: parent
                         color: {
-                            if (!OpenVPN.available && !Tailscale.available) return Foundations.palette.base08;
-                            if (vpnState.anyConnecting) return Foundations.palette.base0A;
-                            if (vpnState.anyConnected) return Foundations.palette.base0B;
+                            if (!OpenVPN.available && !Tailscale.available)
+                                return Foundations.palette.base08;
+                            if (vpnState.anyConnecting)
+                                return Foundations.palette.base0A;
+                            if (vpnState.anyConnected)
+                                return Foundations.palette.base0B;
                             return root.colour;
                         }
-                        text: {
-                            if (vpnState.anyConnecting) return "sync";
-                            if (vpnState.anyConnected) return "vpn_key";
-                            return "vpn_key_off";
-                        }
-
-                        Behavior on color {
-                            BasicColorAnimation { }
-                        }
+                        name: vpnState.anyConnecting ? "sync" : "key"
+                        size: 15
                     }
 
                     // Subtle pulsing animation for connecting state
@@ -211,16 +191,10 @@ Rectangle {
                         }
                     }
 
-                    MaterialFontIcon {
-                        animate: true
+                    MacIcon {
                         color: root.colour
-                        text: {
-                            if (!Bluetooth.defaultAdapter?.enabled)
-                                return "bluetooth_disabled";
-                            if (Bluetooth.devices.values.some(d => d.connected))
-                                return "bluetooth_connected";
-                            return "bluetooth";
-                        }
+                        name: Bluetooth.defaultAdapter?.enabled ? "bluetooth" : "bluetooth-off"
+                        size: 15
                     }
                 }
 
@@ -230,14 +204,14 @@ Rectangle {
                         values: Bluetooth.devices.values.filter(d => d.state !== BluetoothDeviceState.Disconnected)
                     }
 
-                    MaterialFontIcon {
+                    MacIcon {
                         id: device
 
                         required property BluetoothDevice modelData
 
-                        animate: true
                         color: root.colour
-                        text: Services.IconsService.getBluetoothIcon(modelData.icon)
+                        name: Services.IconsService.getMacBluetoothIcon(modelData.icon)
+                        size: 15
 
                         SequentialAnimation on opacity {
                             alwaysRunToEnd: true
@@ -267,26 +241,32 @@ Rectangle {
             sourceComponent: ClickableIcon {
                 onClicked: Quickshell.execDetached(["gnome-power-statistics"])
 
-                MaterialFontIcon {
-                    animate: true
-                    color: !UPower.onBattery || UPower.displayDevice.percentage > 0.2 ? root.colour : Foundations.palette.base08
-                    text: {
-                        if (!UPower.displayDevice.isLaptopBattery) {
+                Item {
+                    height: 18
+                    width: 27
+
+                    MacBattery {
+                        anchors.centerIn: parent
+                        charging: !UPower.onBattery
+                        color: root.colour
+                        level: UPower.displayDevice.percentage
+                        visible: UPower.displayDevice.isLaptopBattery
+                    }
+
+                    MaterialFontIcon {
+                        id: profileIcon
+
+                        anchors.centerIn: parent
+                        animate: true
+                        color: root.colour
+                        text: {
                             if (PowerProfiles.profile === PowerProfile.PowerSaver)
                                 return "energy_savings_leaf";
                             if (PowerProfiles.profile === PowerProfile.Performance)
                                 return "rocket_launch";
                             return "balance";
                         }
-
-                        const perc = UPower.displayDevice.percentage;
-                        const charging = !UPower.onBattery;
-                        if (perc === 1)
-                            return charging ? "battery_charging_full" : "battery_full";
-                        let level = Math.floor(perc * 7);
-                        if (charging && (level === 4 || level === 1))
-                            level--;
-                        return charging ? `battery_charging_${(level + 3) * 10}` : `battery_${level}_bar`;
+                        visible: !UPower.displayDevice.isLaptopBattery
                     }
                 }
             }

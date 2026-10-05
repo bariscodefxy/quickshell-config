@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import qs.services
 import qs.ds
+import qs.ds.icons
 import qs.modules.popups as BarPopouts
 import qs.modules.bar.components
 import Quickshell
@@ -11,11 +12,16 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    readonly property int hPadding: Foundations.spacing.l
     required property int innerHeight
     required property BarPopouts.Wrapper popouts
     required property ShellScreen screen
     required property PersistentProperties visibilities
+
+    property string openMenu: ""
+
+    function closeMenus(): void {
+        root.openMenu = "";
+    }
 
     function checkPopout(x: real): void {
         const ch = mainLayout.childAt(x, height / 2) as WrappedLoader;
@@ -32,6 +38,7 @@ Item {
             const items = item.items;
             const icon = items.childAt(mapToItem(items, x, 0).x, items.height / 2);
             if (icon) {
+                root.openMenu = "";
                 popouts.currentName = icon.name;
                 popouts.currentCenter = Qt.binding(() => icon.mapToItem(root, icon.implicitWidth / 2, 0).x);
                 popouts.hasCurrent = true;
@@ -40,15 +47,13 @@ Item {
             const index = Math.floor(((x - left) / itemWidth) * item.items.count);
             const trayItem = item.items.itemAt(index);
             if (trayItem) {
+                root.openMenu = "";
                 popouts.currentName = `traymenu${index}`;
                 popouts.currentCenter = Qt.binding(() => trayItem.mapToItem(root, trayItem.implicitWidth / 2, 0).x);
                 popouts.hasCurrent = true;
             }
-        } else if (id === "resources") {
-            popouts.currentName = "systemtray";
-            popouts.currentCenter = Qt.binding(() => item.mapToItem(root, item.implicitWidth / 2, 0).x);
-            popouts.hasCurrent = true;
         } else if (id === "date") {
+            root.openMenu = "";
             popouts.currentName = "calendar";
             popouts.currentCenter = Qt.binding(() => item.mapToItem(root, item.implicitWidth / 2, 0).x);
             popouts.hasCurrent = true;
@@ -61,25 +66,19 @@ Item {
         id: mainLayout
 
         anchors.fill: parent
-        spacing: Foundations.spacing.m
+        spacing: 2
 
-        // Left side
-        WrappedLoader {
-            id: workspaces
+        // Left side: macOS menu bar
+        MacLeftMenus {
+            Layout.alignment: Qt.AlignVCenter
+            Layout.leftMargin: 12
 
-            Layout.leftMargin: root.hPadding
+            openMenu: root.openMenu
+            screen: root.screen
+            visibilities: root.visibilities
 
-            sourceComponent: Workspaces {
-                screen: root.screen
-            }
-        }
-        WrappedLoader {
-            id: activeWindow
-
-            sourceComponent: ActiveWindow {
-                height: root.innerHeight
-                screen: root.screen
-            }
+            onCloseRequested: root.openMenu = ""
+            onOpenRequested: name => root.openMenu = name
         }
 
         // Center spacer
@@ -98,17 +97,28 @@ Item {
             }
         }
         WrappedLoader {
-            id: resources
-
-            sourceComponent: SystemTray {
-                height: root.innerHeight
-            }
-        }
-        WrappedLoader {
             id: statusIcons
 
             sourceComponent: StatusIcons {
                 height: root.innerHeight
+            }
+        }
+        MacIcon {
+            Layout.alignment: Qt.AlignVCenter
+
+            clickable: true
+            color: Foundations.glass.barIcon
+            name: "magnifier"
+            size: 15
+
+            onClicked: {
+                if (root.visibilities.launcher)
+                    root.visibilities.launcher = false;
+                else {
+                    root.openMenu = "";
+                    root.visibilities.launcher = true;
+                    root.visibilities.searchText = "";
+                }
             }
         }
         WrappedLoader {
@@ -122,6 +132,7 @@ Item {
                         popouts.hasCurrent = false;
                         popouts.currentName = "";
                     } else {
+                        root.openMenu = "";
                         popouts.currentName = "calendar";
                         popouts.currentCenter = Qt.binding(() => date.mapToItem(root, date.width / 2, 0).x);
                         popouts.hasCurrent = true;
@@ -138,7 +149,7 @@ Item {
         WrappedLoader {
             id: notificationToggle
 
-            Layout.rightMargin: root.hPadding
+            Layout.rightMargin: 10
 
             sourceComponent: NotificationListToggle {
                 visibilities: root.visibilities
@@ -146,14 +157,15 @@ Item {
         }
     }
 
-    // Absolutely positioned launcher toggle, centered on screen
-    LauncherToggle {
-        id: launcherToggle
+    Connections {
+        function onLauncherChanged(): void {
+            root.openMenu = "";
+        }
+        function onNotificationsChanged(): void {
+            root.openMenu = "";
+        }
 
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        innerHeight: root.innerHeight
-        visibilities: root.visibilities
+        target: root.visibilities
     }
 
     component WrappedLoader: Loader {

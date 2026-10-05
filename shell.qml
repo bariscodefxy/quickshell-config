@@ -8,7 +8,7 @@ ShellRoot {
 
     property int margin: Foundations.spacing.xxs
     property int radius: Foundations.radius.s
-    property int barSize: 30
+    property int barSize: 28
 
     Shell {
         marginSize: root.margin

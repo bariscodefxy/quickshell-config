@@ -1,23 +1,41 @@
+pragma ComponentBehavior: Bound
+
 import qs.ds
+import qs.ds.icons
 import qs.services
-import qs.ds.buttons.circularButtons as CircularButtons
 import Quickshell
 import QtQuick
 
-CircularButtons.S {
+Item {
     id: root
 
     required property var visibilities
     readonly property bool enabled: root.visibilities.notifications
 
-    icon: NotificationService.doNotDisturb ? "do_not_disturb_on" : "notifications"
+    implicitHeight: 26
+    implicitWidth: 26
 
-    backgroundColor: enabled ? Foundations.palette.base00 : "transparent"
-    foregroundColor: enabled ? Foundations.palette.base00 : Foundations.palette.base0D
+    Rectangle {
+        anchors.centerIn: parent
+        color: root.enabled ? Foundations.glass.barText : "transparent"
+        height: 24
+        radius: 12
+        width: 24
+    }
 
-    active: enabled
+    MacIcon {
+        anchors.centerIn: parent
+        color: root.enabled ? "#ffffff" : Foundations.glass.barIcon
+        name: NotificationService.doNotDisturb ? "bell-slash" : "bell"
+        size: 15
+    }
 
-    onClicked: {
-        root.visibilities.notifications = !root.visibilities.notifications;
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+
+        onClicked: {
+            root.visibilities.notifications = !root.visibilities.notifications;
+        }
     }
 }
