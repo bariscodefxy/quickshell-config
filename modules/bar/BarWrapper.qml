@@ -36,59 +36,10 @@ Item {
     implicitHeight: root.contentHeight
     visible: true
 
-    // Liquid glass bar: frosted base + top-down sheen + specular top edge.
-    // (True background blur is unavailable — the compositor blur rule broke
-    // app window rendering — so depth is faked with layered translucency.)
+    // Bare menu bar (macOS-like): no fill, no blur, no shading, no edges.
+    // Only the menu content (text/icons) paints over the wallpaper.
     // Visuals stay 28px: the wrapper is taller (hit-test area for the
-    // overflowing dropdowns) but only the top strip is painted.
-    Rectangle {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        color: Qt.alpha(Foundations.glass.barBg, Settings.glassBarOpacity())
-        height: root.barHeight
-    }
-
-    Rectangle {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        height: root.barHeight
-
-        gradient: Gradient {
-            orientation: Gradient.Vertical
-
-            GradientStop {
-                position: 0.0
-                color: Qt.alpha("#ffffff", 0.16)
-            }
-            GradientStop {
-                position: 0.45
-                color: Qt.alpha("#ffffff", 0.04)
-            }
-            GradientStop {
-                position: 1.0
-                color: Qt.alpha("#ffffff", 0.0)
-            }
-        }
-    }
-
-    Rectangle {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        color: Qt.alpha("#ffffff", 0.45)
-        height: 1
-    }
-
-    Rectangle {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: root.barHeight - 1
-        color: Qt.alpha(Foundations.glass.barHairline, 0.6)
-        height: 1
-    }
+    // overflowing dropdowns) but nothing else is painted.
 
     Loader {
         id: content

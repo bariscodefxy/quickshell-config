@@ -14,7 +14,7 @@ Item {
 
     Rectangle {
         anchors.centerIn: parent
-        color: IdleInhibitor.enabled ? Foundations.glass.barText : "transparent"
+        color: IdleInhibitor.enabled ? GtkTheme.barText : "transparent"
         height: 24
         radius: 12
         width: 24
@@ -22,7 +22,7 @@ Item {
 
     ThemeIcon {
         anchors.centerIn: parent
-        color: IdleInhibitor.enabled ? "#ffffff" : Foundations.glass.barIcon
+        color: IdleInhibitor.enabled ? "#ffffff" : GtkTheme.barIcon
         fallback: "moon"
         name: "weather-clear-night-symbolic"
         size: 14

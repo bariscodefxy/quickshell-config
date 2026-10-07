@@ -30,7 +30,7 @@ Rectangle {
         id: dateText
 
         anchors.centerIn: parent
-        color: Foundations.glass.barText
+        color: GtkTheme.barText
         font.family: Foundations.font.family.sans
         text: Time.format(Settings.clock24h ? "ddd HH:mm" : "ddd h:mm AP")
     }

@@ -44,6 +44,30 @@ Variants {
             color: "transparent"
             screen: scope.modelData
 
+            // Real compositor blur (Niri 26.04+ ext-background-effect) behind
+            // the dock pill and transient menus only. The menu bar paints
+            // no blur (macOS-like): just a dark shading gradient for
+            // legibility. Small regions + Niri's automatic xray keep this
+            // cheap on weak GPUs. No-op where the protocol is missing.
+            BackgroundEffect.blurRegion: Region {
+                // Pill-exact: the wrapper is taller than the painted pill and
+                // the difference showed as a second halo layer behind it.
+                Region {
+                    item: panels.dock.pillItem
+                    radius: 22
+                }
+                // Transient menus: zero-area while hidden (wrappers collapse
+                // to 0 width), so no stale blur patches linger.
+                Region {
+                    item: panels.popouts
+                    radius: root.radiusSize
+                }
+                Region {
+                    item: panels.notifications
+                    radius: root.radiusSize
+                }
+            }
+
             mask: Region {
                 height: win.height - bar.implicitHeight - root.marginSize
                 intersection: Intersection.Xor

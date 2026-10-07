@@ -9,7 +9,7 @@ import qs.shell
 BackgroundWrapper {
     id: root
 
-    readonly property int contentHeight: 78
+    readonly property int contentHeight: 72
     readonly property int exclusiveZone: contentHeight + margin
     required property int margin
     required property var panels
@@ -17,6 +17,8 @@ BackgroundWrapper {
     required property ShellScreen screen
 
     hasCurrent: true
+
+    readonly property Item pillItem: content.pillItem
 
     function closeMenu(): void {
         content.item?.closeMenu();

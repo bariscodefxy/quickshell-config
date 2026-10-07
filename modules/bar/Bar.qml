@@ -97,7 +97,7 @@ Item {
             Layout.alignment: Qt.AlignVCenter
 
             clickable: true
-            color: Foundations.glass.barIcon
+            color: GtkTheme.barIcon
             fallback: "magnifier"
             name: "system-search-symbolic"
             size: 15

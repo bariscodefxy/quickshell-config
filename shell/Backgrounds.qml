@@ -27,6 +27,8 @@ Shape {
         radius: root.radius
     }
     Background {
+        edgeColor: Qt.alpha("#ffffff", 0.14)
+        glassAlpha: 0.62
         maxAvailableHeight: root.height
         startX: wrapper.x - root.radius
         startY: 0
@@ -34,6 +36,8 @@ Shape {
         radius: root.radius
     }
     Background {
+        edgeColor: Qt.alpha("#ffffff", 0.14)
+        glassAlpha: 0.62
         maxAvailableHeight: root.height
         startX: wrapper.x - root.radius
         startY: 0

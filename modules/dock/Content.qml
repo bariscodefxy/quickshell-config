@@ -8,6 +8,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 import QtQuick
+import QtQuick.Effects
 
 Item {
     id: root
@@ -18,14 +19,21 @@ Item {
     required property var wrapper
 
     readonly property int cellW: 58
-    readonly property int iconSize: 44
-    readonly property int pillH: 74
+    readonly property int iconSize: 52
+    readonly property int pillH: 68
+    // Snug macOS-like fill: 8px top and bottom, running dot tucks just
+    // underneath the icon.
+    readonly property int iconBottomMargin: 8
 
     property string menuKey: ""
     property real menuX: 0
     property int hoverIndex: -1
     property real hoverX: 0
     property bool hovering: false
+
+    // Exposed for the compositor blur region so it matches the painted pill
+    // exactly (the wrapper is a few px taller, which showed as a halo).
+    property alias pillItem: pill
 
     function closeMenu(): void {
         root.menuKey = "";
@@ -50,6 +58,38 @@ Item {
                 return e;
         }
         return root.entryById[appId] ?? root.entryById[appId.toLowerCase()] ?? null;
+    }
+
+    // Resolve an app icon to a loadable image URL, or "" when unresolvable.
+    // Probing goes through hasThemeIcon: iconPath(name, true) proved
+    // unreliable (missing theme returned a broken non-empty path = magenta
+    // checkers), so never trust a path without a positive existence check.
+    // Gated system-icon lookup shared by the settings/trash tiles:
+    // never trust an unchecked iconPath (broken path = magenta checkers).
+    function sysIcon(name: string): string {
+        if (!name || typeof Quickshell.iconPath !== "function" || typeof Quickshell.hasThemeIcon !== "function")
+            return "";
+        if (!Quickshell.hasThemeIcon(name))
+            return "";
+        return Quickshell.iconPath(name);
+    }
+
+    function appIconSrc(entry: var): string {
+        if (!entry || !entry.icon)
+            return "";
+        const name = String(entry.icon);
+        if (name.startsWith("/"))
+            return "file://" + name;
+        if (name.startsWith("file://") || name.startsWith("image://"))
+            return name;
+        if (typeof Quickshell.iconPath !== "function" || typeof Quickshell.hasThemeIcon !== "function")
+            return "";
+        if (Quickshell.hasThemeIcon(name))
+            return Quickshell.iconPath(name);
+        const lower = name.toLowerCase();
+        if (lower !== name && Quickshell.hasThemeIcon(lower))
+            return Quickshell.iconPath(lower);
+        return "";
     }
 
     function launchEntry(entry: var): void {
@@ -130,7 +170,10 @@ Item {
         const list = [];
         const seen = new Set();
         for (const pid of Settings.pinned) {
-            const entry = root.entryById[pid] ?? root.entryById[String(pid).toLowerCase()] ?? null;
+            // Heuristic lookup (not exact map only): pinned ids like
+            // "discord" don't always equal the desktop entry id, and an
+            // exact-only miss showed a letter tile instead of the icon.
+            const entry = root.lookup(String(pid));
             const run = root.running.find(r => (r.entry && entry && r.entry.id === entry.id) || r.key === String(pid).toLowerCase());
             if (!entry && !run)
                 continue;
@@ -224,11 +267,26 @@ Item {
         }
     }
 
+    // Delayed hover-clear: keeps `hovering` true while moving between cells
+    // so magnification doesn't flicker, and lets the icon shrink animate
+    // smoothly after the mouse truly leaves the dock.
+    Timer {
+        id: hoverClearTimer
+
+        interval: 120
+        repeat: false
+
+        onTriggered: {
+            root.hovering = false;
+            root.hoverIndex = -1;
+        }
+    }
+
     // Tooltip
     Rectangle {
         anchors.bottom: pill.top
         anchors.bottomMargin: 8
-        color: Qt.alpha("#1e1e28", 0.92)
+        color: GtkTheme.tooltipBg
         height: tipText.implicitHeight + 10
         radius: 6
         visible: root.hovering && root.hoverIndex >= 0 && root.menuKey === ""
@@ -236,14 +294,14 @@ Item {
         x: Math.max(0, Math.min(pill.width - width, row.x + root.hoverX - width / 2))
         z: 50
 
-        border.color: Qt.alpha("#ffffff", 0.14)
+        border.color: GtkTheme.hairline
         border.width: 1
 
         DsText.BodyS {
             id: tipText
 
             anchors.centerIn: parent
-            color: "#f5f5f7"
+            color: GtkTheme.surfaceText
             font.family: Foundations.font.family.sans
             text: root.hoverIndex >= 0 && root.items[root.hoverIndex] ? root.items[root.hoverIndex].name : ""
         }
@@ -253,7 +311,7 @@ Item {
     Rectangle {
         id: menu
 
-        color: Qt.alpha("#232329", 0.96)
+        color: GtkTheme.menuBg
         height: menuCol.implicitHeight + 12
         radius: 10
         visible: root.menuKey !== ""
@@ -262,7 +320,7 @@ Item {
         y: -height - 10
         z: 60
 
-        border.color: Qt.alpha("#ffffff", 0.12)
+        border.color: GtkTheme.hairline
         border.width: 1
 
         Column {
@@ -285,7 +343,7 @@ Item {
 
                     Rectangle {
                         anchors.centerIn: parent
-                        color: Qt.alpha("#ffffff", 0.1)
+                        color: GtkTheme.menuSeparator
                         height: 1
                         visible: modelData.separator
                         width: parent.width - 8
@@ -302,7 +360,7 @@ Item {
                         anchors.left: parent.left
                         anchors.leftMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
-                        color: "#f5f5f7"
+                        color: mrowMouse.containsMouse ? "#ffffff" : GtkTheme.surfaceText
                         font.family: Foundations.font.family.sans
                         font.pointSize: 10
                         text: modelData.label ?? ""
@@ -340,19 +398,59 @@ Item {
         }
     }
 
+    // Soft drop shadow grounding the pill: hides the blur/sharp seam at
+    // the pill edge. Static geometry, cached layer — no per-frame cost.
+    Rectangle {
+        anchors.bottom: pill.bottom
+        anchors.bottomMargin: -5
+        anchors.horizontalCenter: pill.horizontalCenter
+        color: Qt.alpha("#000000", 0.35)
+        height: pill.height
+        radius: 24
+        width: pill.width
+
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            blurEnabled: true
+            blurMax: 24
+        }
+    }
+
     // Pill
     Rectangle {
         id: pill
 
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        color: Qt.alpha("#1e1e28", 0.78)
+        color: GtkTheme.dockBg
         height: root.pillH
         width: row.width + 20
 
-        border.color: Qt.alpha("#ffffff", 0.12)
+        border.color: GtkTheme.dockBorder
         border.width: 1
         radius: 22
+
+        // Full-perimeter inner glass edge: defines the rounded corners
+        // against the blurred backdrop, macOS-style.
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 1
+            border.color: GtkTheme.edgeLight
+            border.width: 1
+            color: "transparent"
+            radius: 21
+        }
+
+        // Top specular highlight, inset to stay clear of the corner curves.
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 1
+            color: GtkTheme.topHighlight
+            height: 1
+            radius: 1
+            width: parent.width - 48
+        }
 
         Row {
             id: row
@@ -378,17 +476,32 @@ Item {
                     // App icon
                     Item {
                         anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 10
+                        anchors.bottomMargin: root.iconBottomMargin
                         anchors.horizontalCenter: parent.horizontalCenter
                         height: cell.iconH
                         width: cell.iconH
 
-                        readonly property string themeSrc: cell.modelData.kind === "settings" ? Quickshell.iconPath("preferences-system", true) : cell.modelData.kind === "trash" ? Quickshell.iconPath("user-trash", true) : ""
+                        // Smooth grow + shrink instead of snapping.
+                        Behavior on height {
+                            NumberAnimation {
+                                duration: Foundations.duration.fast
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+                        Behavior on width {
+                            NumberAnimation {
+                                duration: Foundations.duration.fast
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
+                        readonly property string themeSrc: root.sysIcon(cell.modelData.kind === "settings" ? "preferences-system" : cell.modelData.kind === "trash" ? "user-trash" : "")
+                        readonly property string appSrc: cell.modelData.kind === "app" ? root.appIconSrc(cell.modelData.entry) : ""
 
                         IconImage {
                             anchors.fill: parent
-                            source: cell.modelData.entry && typeof Quickshell.iconPath === "function" ? Quickshell.iconPath(cell.modelData.entry.icon) : ""
-                            visible: cell.modelData.kind === "app" && cell.modelData.entry != null
+                            source: parent.appSrc
+                            visible: parent.appSrc !== ""
                         }
 
                         IconImage {
@@ -401,7 +514,7 @@ Item {
                             anchors.fill: parent
                             color: "#48484e"
                             radius: 10
-                            visible: cell.modelData.kind === "app" && cell.modelData.entry == null
+                            visible: cell.modelData.kind === "app" && parent.appSrc === ""
                         }
 
                         Text {
@@ -411,23 +524,23 @@ Item {
                             font.pointSize: 18
                             font.weight: Font.Bold
                             text: (cell.modelData.name || "?").charAt(0)
-                            visible: cell.modelData.kind === "app" && cell.modelData.entry == null
+                            visible: cell.modelData.kind === "app" && parent.appSrc === ""
                         }
 
                         MacIcon {
                             anchors.centerIn: parent
-                            color: "#f5f5f7"
+                            color: GtkTheme.surfaceText
                             name: cell.modelData.kind === "settings" ? "gear" : "trash"
                             size: Math.min(30, cell.iconH * 0.62)
                             visible: cell.modelData.kind !== "app" && cell.modelData.kind !== "sep" && parent.themeSrc === ""
                         }
                     }
 
-                    // Separator
+                    // Separator: short and faint like the reference pill.
                     Rectangle {
                         anchors.centerIn: parent
-                        color: Qt.alpha("#ffffff", 0.18)
-                        height: 44
+                        color: GtkTheme.dockSep
+                        height: 40
                         visible: cell.modelData.kind === "sep"
                         width: 1
                     }
@@ -437,7 +550,7 @@ Item {
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 3
                         anchors.horizontalCenter: parent.horizontalCenter
-                        color: "#ffffff"
+                        color: GtkTheme.dot
                         height: 4
                         radius: 2
                         visible: cell.modelData.count > 0
@@ -463,14 +576,18 @@ Item {
                             }
                         }
                         onEntered: {
+                            hoverClearTimer.stop();
+                            root.hoverX = (cell.index + 0.5) * root.cellW;
+                            root.hovering = true;
                             root.hoverIndex = cell.index;
                         }
                         onExited: {
                             if (root.hoverIndex === cell.index)
                                 root.hoverIndex = -1;
-                            root.hovering = false;
+                            hoverClearTimer.restart();
                         }
                         onPositionChanged: mouse => {
+                            hoverClearTimer.stop();
                             root.hoverX = cell.x + mouse.x;
                             root.hovering = true;
                             root.hoverIndex = cell.index;

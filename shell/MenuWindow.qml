@@ -40,13 +40,22 @@ PanelWindow {
     implicitWidth: root.menuW
     implicitHeight: list.height + 12
 
-    // Frosted menu box.
+    // Real compositor blur behind the dropdown (own layer window).
+    BackgroundEffect.blurRegion: Region {
+        item: menuBox
+        radius: 12
+    }
+
+    // Frosted menu box. Tint stays light-glass and thin over the blur;
+    // decoupled from the launcher menu opacity on purpose.
     Rectangle {
+        id: menuBox
+
         anchors.fill: parent
         radius: 12
-        color: Qt.alpha(Foundations.glass.menuBg, Settings.glassMenuOpacity())
+        color: GtkTheme.menuBg
         border.width: 1
-        border.color: Qt.alpha("#000000", 0.1)
+        border.color: GtkTheme.hairline
 
         // Top-down sheen for the frosted-glass depth.
         Rectangle {
@@ -108,7 +117,7 @@ PanelWindow {
 
                 Rectangle {
                     anchors.centerIn: parent
-                    color: Foundations.glass.menuSeparator
+                    color: GtkTheme.menuSeparator
                     height: 1
                     visible: del.modelData.separator === true
                     width: parent.width - 8
@@ -125,7 +134,7 @@ PanelWindow {
                     anchors.left: parent.left
                     anchors.leftMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
-                    color: root.hoveredIndex === del.index ? Foundations.glass.menuHoverText : Foundations.glass.menuText
+                    color: root.hoveredIndex === del.index ? Foundations.glass.menuHoverText : GtkTheme.surfaceText
                     font.family: Foundations.font.family.sans
                     font.pointSize: 10
                     text: del.modelData.label ?? ""
@@ -136,7 +145,7 @@ PanelWindow {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
-                    color: root.hoveredIndex === del.index ? Foundations.glass.menuHoverText : Foundations.glass.menuShortcut
+                    color: root.hoveredIndex === del.index ? Foundations.glass.menuHoverText : (GtkTheme.isDark ? Qt.alpha(GtkTheme.surfaceText, 0.6) : Foundations.glass.menuShortcut)
                     font.family: Foundations.font.family.sans
                     font.pointSize: 10
                     text: del.modelData.shortcut ?? ""

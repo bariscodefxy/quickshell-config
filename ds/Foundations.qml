@@ -69,7 +69,7 @@ Singleton {
     component FontFamily: QtObject {
         property string material: "Material Symbols Rounded"
         property string mono: "MesloLGS Nerd Font"
-        property string sans: "NotoSans Nerd Font"
+        property string sans: "SF Pro Text"
     }
     component FontSize: QtObject {
         property int l: 18

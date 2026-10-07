@@ -17,7 +17,7 @@ Item {
 
     Rectangle {
         anchors.centerIn: parent
-        color: root.enabled ? Foundations.glass.barText : "transparent"
+        color: root.enabled ? GtkTheme.barText : "transparent"
         height: 24
         radius: 12
         width: 24
@@ -25,7 +25,7 @@ Item {
 
     ThemeIcon {
         anchors.centerIn: parent
-        color: root.enabled ? "#ffffff" : Foundations.glass.barIcon
+        color: root.enabled ? "#ffffff" : GtkTheme.barIcon
         fallback: NotificationService.doNotDisturb ? "bell-slash" : "bell"
         name: "notification-symbolic"
         size: 15

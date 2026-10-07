@@ -22,6 +22,11 @@ ShapePath {
 
     required property real radius
 
+    // Liquid-glass tuning per surface: notifications/popouts go thin and
+    // blurred, launcher keeps its opaque body.
+    property real glassAlpha: 0.95
+    property color edgeColor: "transparent"
+
     property int bottomLeftCorner: {
         if (isBottomBorder && !isLeftBorder)
             return Background.CornerType.InvertedBottomLeft;
@@ -67,8 +72,9 @@ ShapePath {
     }
     required property BackgroundWrapper wrapper
 
-    fillColor: wrapper.hasCurrent ?  Qt.alpha(Foundations.palette.base01, 0.95) : "transparent"
-    strokeWidth: -1
+    fillColor: wrapper.hasCurrent ? Qt.alpha(Foundations.palette.base01, root.glassAlpha) : "transparent"
+    strokeColor: root.edgeColor
+    strokeWidth: 1
 
     Behavior on fillColor {
         BasicColorAnimation {

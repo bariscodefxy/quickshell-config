@@ -26,7 +26,15 @@ Item {
     height: size
     width: size
 
-    readonly property string themePath: root.name !== "" && typeof Quickshell.iconPath === "function" ? Quickshell.iconPath(root.name, true) : ""
+    readonly property string themePath: {
+        if (root.name === "" || typeof Quickshell.iconPath !== "function" || typeof Quickshell.hasThemeIcon !== "function")
+            return "";
+        // Gate on hasThemeIcon: an unchecked iconPath can return a broken
+        // non-empty path (magenta checkers) when the theme lacks the name.
+        if (!Quickshell.hasThemeIcon(root.name))
+            return "";
+        return Quickshell.iconPath(root.name);
+    }
     readonly property bool useTheme: root.themePath !== ""
 
     Image {

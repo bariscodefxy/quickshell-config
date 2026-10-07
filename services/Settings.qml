@@ -29,9 +29,9 @@ Singleton {
     property var pinned: ["thunar", "chromium-browser", "code", "Alacritty"]
 
     function glassBarOpacity(): real {
-        // No compositor blur available: keep the bar mostly opaque so text
-        // stays readable over windows. Slider still trims the last bit.
-        return 0.55 + root.glass * 0.35;
+        // Real compositor blur is behind the bar now, so the base tint can
+        // stay light and glassy. Slider still trims the last bit.
+        return 0.35 + root.glass * 0.3;
     }
 
     function glassMenuOpacity(): real {

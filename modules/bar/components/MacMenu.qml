@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import qs.ds
 import qs.ds.icons
+import qs.services
 import QtQuick
 
 // Menu-bar title (Apple logo, app name, File/Edit/...). The dropdown itself
@@ -41,7 +42,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: 1
-        color: titleMouse.containsMouse || root.isOpen ? Qt.alpha(Foundations.glass.barText, root.isOpen ? 0.16 : 0.08) : "transparent"
+        color: titleMouse.containsMouse || root.isOpen ? Qt.alpha(GtkTheme.barText, root.isOpen ? 0.16 : 0.08) : "transparent"
         radius: 6
         z: -1
     }
@@ -50,7 +51,7 @@ Item {
         id: title
 
         anchors.centerIn: parent
-        color: Foundations.glass.barText
+        color: GtkTheme.barText
         font.family: root.titleFontFamily !== "" ? root.titleFontFamily : Foundations.font.family.sans
         font.pointSize: 10
         font.weight: root.titleBold ? Font.Bold : Font.Normal
@@ -60,7 +61,7 @@ Item {
 
     MacIcon {
         anchors.centerIn: parent
-        color: Foundations.glass.barText
+        color: GtkTheme.barText
         name: root.titleIcon
         size: root.titleIconSize
         visible: root.titleIcon !== ""

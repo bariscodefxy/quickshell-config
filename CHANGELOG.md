@@ -6,6 +6,36 @@ on release/tag.
 
 ## [Unreleased]
 
+- `feat`: real Apple SF Pro via `apple-fonts.nix` flake input — `sf-pro` in system fonts, first in fontconfig `sansSerif`, shell `sans` token now `"SF Pro Text"` (Inter stays as fallback).
+
+- `feat`: Inter as the UI font — added to system `fonts.packages` + first in fontconfig `sansSerif` (`~/nix-config`), shell `sans` token now `"Inter"` (SF Pro's closest free look-alike); needs a system rebuild + switch.
+
+- `feat`: menu bar goes fully bare like macOS — no fill, no blur, no shading, no edges; only text/icons over the wallpaper. Removed the now-dead `GtkTheme.barBg`/`barHairline`.
+
+- `feat`: bar paints no solid fill anymore (macOS-like) — only compositor blur plus the shading gradient and faint top edge; removed the now-dead `GtkTheme.barBg`.
+
+- `feat`: dock/bar closer to the macOS reference — dock body 0.15→0.45 so the pill reads over dark wallpapers, shorter/fainter separator, no bottom hairline on the dark bar, subtler top edge.
+
+- `feat`: Niri blur softened via `~/nix-config` (`blur { passes 2; offset 2.0 }`, user-approved exception to the shell-only scope) — less frost on bar/dock glass plus cheaper GPU; needs a home-manager switch, Niri reloads its config live.
+
+- `feat`: bar follows the GTK light/dark mode like the dock — bar glass, text, icons and hairline plus the menu-bar dropdowns switch palettes live (dark: graphite glass + white text); popups/notifications stay dark glass.
+
+- `fix`: icon theme follows the system again (`WhiteSur-dark` pragma after the MacTahoe→WhiteSur switch broke every lookup into magenta checkers) + `hasThemeIcon` gating everywhere so a miss always falls back cleanly instead of rendering broken images.
+
+- `feat`: liquid glass for menus — bar dropdowns (`MenuWindow` own blur + thinned light tint), notification center and bar popovers (thinned dark tint 0.62, subtle glass edge, blur regions that collapse to zero-area while hidden); launcher/settings stay opaque.
+
+- `fix`: dock pill tint settled at 0.15 (0 was black over dark backdrops, 0.3 was milky) plus a real `onEntered` hover bug — Qt's `entered` signal carries no mouse event, so `mouse.x` threw on every cell entry.
+
+- `feat`: real compositor blur behind bar + dock — `BackgroundEffect.blurRegion` (ext-background-effect, Niri 26.04+) covers the bar strip and dock pill (radius-matched); bar/dock tints thinned for the blur era; Niri's automatic xray keeps it cheap (wallpaper blur computed once).
+- `fix`: shorter dock pill (74→68px) hugging 52px icons with symmetric 8px margins; wrapper/exclusion zone follows.
+- `fix`: dock pill tint floored at zero in light mode (0.05 dark) plus softer edge whites — the pill is now pure blur + border + highlight + shadow; any remaining milk is Niri's blur recipe (strength/saturation), not shell tint.
+
+- `feat`: dock follows the system GTK theme's light/dark mode — new `GtkTheme` service watches `gtk-3.0`/`gtk-4.0` `settings.ini` (theme name + prefer-dark) and the pill, tooltip, context menu, separator, running dot and fallback glyphs switch between graphite glass and light glass live.
+
+- `fix`: pinned dock apps resolve via heuristic lookup — exact-id-only matching missed entries (e.g. pinned Discord showed a letter tile while running showed the real icon).
+- `fix`: dock icons with no theme match no longer render a broken/missing texture — icon lookup probes with `iconPath(name, true)` plus a lowercase fallback and absolute-path support, falling back to the letter tile when unresolvable.
+- `fix`: dock magnification now shrinks smoothly — icon sizes animate via `Behavior` and hover-clear is delayed (120ms) so moving between icons doesn't flicker and leaving the dock eases down instead of snapping.
+
 - `feat`: system icon theme throughout the shell — `//@ pragma IconTheme MacTahoe-dark` so dock/launcher/tray app icons resolve from the theme; new `ThemeIcon` component renders theme glyphs tinted to shell colors with bundled-SVG fallback; bar status icons (volume, mic, network, VPN, bluetooth, battery, spotlight, bell, moon) and dock settings/trash now come from the theme.
 
 - `fix`: input-mask Subtract regions restored so dock/settings/popouts/launcher receive clicks after the menu-window split.

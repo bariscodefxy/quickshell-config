@@ -16,7 +16,7 @@ import qs.ds.animations
 Rectangle {
     id: root
 
-    property color colour: Foundations.glass.barIcon
+    property color colour: GtkTheme.barIcon
     readonly property alias items: iconRow
     readonly property int margin: Foundations.spacing.s
     readonly property int iconSpacing: Foundations.spacing.xxs
