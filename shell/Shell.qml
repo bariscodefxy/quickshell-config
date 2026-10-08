@@ -120,11 +120,6 @@ Variants {
                     shadowEnabled: true
                 }
 
-                Border {
-                    bar: bar
-                    margin: root.marginSize
-                    radius: root.radiusSize
-                }
                 Backgrounds {
                     bar: bar
                     panels: panels

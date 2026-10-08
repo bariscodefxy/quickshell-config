@@ -8,7 +8,6 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 import QtQuick
-import QtQuick.Effects
 
 Item {
     id: root
@@ -72,6 +71,18 @@ Item {
         if (!Quickshell.hasThemeIcon(name))
             return "";
         return Quickshell.iconPath(name);
+    }
+
+    // Dock icon with a persistent fallback: live resolution first,
+    // last-known cached URL while DesktopEntries is still warming up
+    // after a reload (otherwise running apps flash letter tiles).
+    // NOTE: the store lives in onLiveSrcChanged, NOT in the appSrc
+    // binding — writing the cache inside the binding that reads it is a
+    // binding loop (the engine flags it and re-evaluates pointlessly).
+    function appIconLive(item: var): string {
+        if (!item || item.kind !== "app")
+            return "";
+        return root.appIconSrc(item.entry);
     }
 
     function appIconSrc(entry: var): string {
@@ -243,6 +254,9 @@ Item {
         return rows;
     }
 
+    // Slot centers stay on the fixed grid (index-based) so magnification
+    // never feeds back into itself; only the slot WIDTHS stretch with
+    // growth, giving neighbors room instead of overlapping.
     function mag(index: int): real {
         if (!root.hovering)
             return 1;
@@ -398,24 +412,6 @@ Item {
         }
     }
 
-    // Soft drop shadow grounding the pill: hides the blur/sharp seam at
-    // the pill edge. Static geometry, cached layer — no per-frame cost.
-    Rectangle {
-        anchors.bottom: pill.bottom
-        anchors.bottomMargin: -5
-        anchors.horizontalCenter: pill.horizontalCenter
-        color: Qt.alpha("#000000", 0.35)
-        height: pill.height
-        radius: 24
-        width: pill.width
-
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            blurEnabled: true
-            blurMax: 24
-        }
-    }
-
     // Pill
     Rectangle {
         id: pill
@@ -425,6 +421,14 @@ Item {
         color: GtkTheme.dockBg
         height: root.pillH
         width: row.width + 20
+
+        // The pill breathes with magnification instead of snapping.
+        Behavior on width {
+            NumberAnimation {
+                duration: Foundations.duration.fast
+                easing.type: Easing.OutCubic
+            }
+        }
 
         border.color: GtkTheme.dockBorder
         border.width: 1
@@ -471,7 +475,17 @@ Item {
                     readonly property real iconH: root.iconSize * cell.m
 
                     height: row.height
-                    width: root.cellW
+                    // The slot stretches exactly by the icon's growth, so a
+                    // magnified icon always fits its cell (3px clearance per
+                    // side) and pushes neighbors aside instead of overlapping.
+                    width: root.cellW + (cell.iconH - root.iconSize)
+
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: Foundations.duration.fast
+                            easing.type: Easing.OutCubic
+                        }
+                    }
 
                     // App icon
                     Item {
@@ -496,7 +510,13 @@ Item {
                         }
 
                         readonly property string themeSrc: root.sysIcon(cell.modelData.kind === "settings" ? "preferences-system" : cell.modelData.kind === "trash" ? "user-trash" : "")
-                        readonly property string appSrc: cell.modelData.kind === "app" ? root.appIconSrc(cell.modelData.entry) : ""
+                        readonly property string liveSrc: root.appIconLive(cell.modelData)
+                        readonly property string appSrc: liveSrc !== "" ? liveSrc : DockIconCache.lookup(cell.modelData.key)
+
+                        onLiveSrcChanged: {
+                            if (liveSrc !== "")
+                                DockIconCache.store(cell.modelData.key, cell.modelData.name, liveSrc);
+                        }
 
                         IconImage {
                             anchors.fill: parent
@@ -588,7 +608,12 @@ Item {
                         }
                         onPositionChanged: mouse => {
                             hoverClearTimer.stop();
-                            root.hoverX = cell.x + mouse.x;
+                            // Map the pointer back onto the fixed grid: slots
+                            // stretch as icons grow, but mag() reads grid
+                            // coords. Normalized per-cell so slot edges agree
+                            // (no jumps when crossing). Handler context, so
+                            // no binding loop.
+                            root.hoverX = cell.index * root.cellW + mouse.x * (root.cellW / cell.width);
                             root.hovering = true;
                             root.hoverIndex = cell.index;
                         }
