@@ -24,7 +24,7 @@ Consequences:
 
 ## Fonts
 
-Bar/launcher icons need **Material Symbols Rounded** plus a Nerd Font. The wrapper symlinks material-symbols and exports it via `XDG_DATA_DIRS`; raw mode relies on system fonts. If icons render as text or tofu, check `fc-match "Material Symbols Rounded"` first.
+UI text is Apple's **SF Pro Text** (`Foundations.font.family.sans`); mono is **MesloLGS Nerd Font**. SF fonts come from the `apple-fonts.nix` flake input in `~/nix-config` (system-wide fontconfig default) — raw mode needs them installed locally. Bar/launcher icons need **Material Symbols Rounded** plus a Nerd Font. The wrapper symlinks material-symbols and exports it via `XDG_DATA_DIRS`; raw mode relies on system fonts. If icons render as text or tofu, check `fc-match "Material Symbols Rounded"` first; if UI text falls back wrong, check `fc-match "SF Pro Text"`.
 
 ## Layout
 
