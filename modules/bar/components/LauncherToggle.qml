@@ -46,7 +46,7 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: Foundations.spacing.l
             anchors.verticalCenter: parent.verticalCenter
-            color: Foundations.palette.base04
+            color: GtkTheme.contentTextDim
             text: "search"
         }
 
@@ -56,7 +56,7 @@ Item {
             anchors.left: searchIcon.right
             anchors.leftMargin: Foundations.spacing.m
             anchors.verticalCenter: parent.verticalCenter
-            color: Foundations.palette.base04
+            color: GtkTheme.contentTextDim
             opacity: root.isExpanded ? 0 : 1
             text: "Search"
             visible: !root.isExpanded
@@ -188,9 +188,9 @@ Item {
 
         onHoveredChanged: {
             if (hovered) {
-                content.color = Foundations.palette.base03;
+                content.color = GtkTheme.controlBg;
             } else {
-                content.color = Foundations.palette.base02;
+                content.color = GtkTheme.cardBg;
             }
         }
     }

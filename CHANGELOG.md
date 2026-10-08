@@ -6,6 +6,20 @@ on release/tag.
 
 ## [Unreleased]
 
+- `feat`: dock slots stretch with magnification — a growing icon pushes neighbors aside instead of overlapping; pill breathes with it, pointer maps back to the grid so the right icon grows.
+
+- `fix`: dock icons no longer flash letter tiles after a reload — live resolutions are cached to `~/.config/qsc/icon-cache.json` and served instantly while lookups warm up.
+
+- `feat`: settings, notifications, popups and bar widgets follow the light/dark mode — new `GtkTheme.contentText/TextDim/pageBg/panelBg/cardBg/controlBg` tokens replace the static dark palette and hardcoded hex (incl. shared `ds/text`, `TextField` and `ListItem` defaults).
+
+- `fix`: removed the fullscreen frame overlay (`shell/Border.qml`) — no more dark border around the screen edges.
+
+- `fix`: startup no longer forces dark apps — theme enforce waits for `settings.json` to load, so the saved mode (e.g. light) wins.
+
+- `fix`: removed the dock drop-shadow layer that read as a second gray shell over light wallpapers — single pill now.
+
+- `feat`: runtime theme switch in System Settings → Appearance (shell owns the theme now, nix-config only installs theme files) — System/Light/Dark flips the shell instantly, rewrites the GTK theme + dconf so apps follow, and re-applies on every start; preference persists in `settings.json`.
+
 - `feat`: real Apple SF Pro via `apple-fonts.nix` flake input — `sf-pro` in system fonts, first in fontconfig `sansSerif`, shell `sans` token now `"SF Pro Text"` (Inter stays as fallback).
 
 - `feat`: Inter as the UI font — added to system `fonts.packages` + first in fontconfig `sansSerif` (`~/nix-config`), shell `sans` token now `"Inter"` (SF Pro's closest free look-alike); needs a system rebuild + switch.

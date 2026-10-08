@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import qs.services
 import QtQuick
 import QtQuick.Layouts
 
@@ -12,7 +13,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#2e2e38"
+        color: GtkTheme.cardBg
         radius: 10
     }
 

@@ -4,6 +4,7 @@ import qs.ds
 import qs.ds.icons as Icons
 import qs.ds.text as DsText
 import qs.ds.animations
+import qs.services
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
@@ -34,7 +35,7 @@ Rectangle {
 
     color: {
         if (mouseArea.hasFeedback) return mouseArea.feedbackColor;
-        if (mouseArea.containsMouse) return Foundations.palette.base03;
+        if (mouseArea.containsMouse) return GtkTheme.controlBg;
         return "transparent";
     }
     radius: Foundations.radius.xs
@@ -97,7 +98,7 @@ Rectangle {
                     Layout.fillWidth: true
                     text: summaryMetrics.elidedText
                     maximumLineCount: 1
-                    color: root.isCritical ? Foundations.palette.base08 : Foundations.palette.base06
+                    color: root.isCritical ? Foundations.palette.base08 : GtkTheme.contentText
                 }
 
                 TextMetrics {
@@ -114,7 +115,7 @@ Rectangle {
                     text: bodyMetrics.elidedText
                     maximumLineCount: 2
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                    color: Foundations.palette.base05
+                    color: GtkTheme.contentText
                     visible: root.body !== ""
                 }
 
@@ -138,7 +139,7 @@ Rectangle {
                 Layout.preferredHeight: 20
                 Layout.alignment: Qt.AlignVCenter
                 radius: 10
-                color: dismissArea.containsMouse ? Foundations.palette.base08 : Foundations.palette.base03
+                color: dismissArea.containsMouse ? Foundations.palette.base08 : GtkTheme.controlBg
 
                 Behavior on opacity {
                     BasicNumberAnimation {
@@ -149,7 +150,7 @@ Rectangle {
                 Icons.MaterialFontIcon {
                     anchors.centerIn: parent
                     text: "close"
-                    color: dismissArea.containsMouse ? Foundations.palette.base07 : Foundations.palette.base05
+                    color: GtkTheme.contentText
                     font.pointSize: Foundations.font.size.xs
                 }
 

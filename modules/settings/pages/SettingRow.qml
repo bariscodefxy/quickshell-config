@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import qs.ds
 import qs.ds.icons
 import qs.ds.text as DsText
+import qs.services
 import QtQuick
 import QtQuick.Layouts
 
@@ -51,14 +52,14 @@ Item {
 
             DsText.BodyM {
                 Layout.fillWidth: true
-                color: "#f5f5f7"
+                color: GtkTheme.contentText
                 font.family: Foundations.font.family.sans
                 text: root.title
             }
 
             DsText.BodyS {
                 Layout.fillWidth: true
-                color: "#a0a0ab"
+                color: GtkTheme.contentTextDim
                 font.family: Foundations.font.family.sans
                 text: root.subtitle
                 visible: root.subtitle !== ""

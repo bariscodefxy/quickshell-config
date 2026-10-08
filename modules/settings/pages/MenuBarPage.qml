@@ -23,8 +23,8 @@ ColumnLayout {
             activeColor: "#30d158"
             activeThumbColor: "#ffffff"
             checked: Settings[row.key]
-            inactiveBorderColor: "#48484e"
-            inactiveColor: "#48484e"
+            inactiveBorderColor: GtkTheme.controlBg
+            inactiveColor: GtkTheme.controlBg
             inactiveThumbColor: "#ffffff"
 
             onToggled: Settings[row.key] = checked

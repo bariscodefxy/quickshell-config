@@ -97,7 +97,7 @@ Column {
         }
 
         anchors.horizontalCenter: parent.horizontalCenter
-        color: Foundations.palette.base02
+        color: GtkTheme.cardBg
         implicitHeight: Math.max(saver.implicitHeight, balance.implicitHeight, perf.implicitHeight) + Foundations.spacing.xxs * 2
         implicitWidth: saver.implicitHeight + balance.implicitHeight + perf.implicitHeight + Foundations.spacing.s * 2 + Foundations.spacing.l * 2
         radius: Foundations.radius.all
@@ -105,7 +105,7 @@ Column {
         Rectangle {
             id: indicator
 
-            color: Foundations.palette.base05
+            color: GtkTheme.contentText
             radius: Foundations.radius.all
             state: profiles.current
 
@@ -143,7 +143,7 @@ Column {
             id: saver
 
             active: profiles.current === icon
-            activeForegroundColor: Foundations.palette.base03
+            activeForegroundColor: GtkTheme.controlBg
             anchors.left: parent.left
             anchors.leftMargin: Foundations.spacing.xxs
             anchors.verticalCenter: parent.verticalCenter
@@ -157,7 +157,7 @@ Column {
             id: balance
 
             active: profiles.current === icon
-            activeForegroundColor: Foundations.palette.base03
+            activeForegroundColor: GtkTheme.controlBg
             anchors.centerIn: parent
             icon: "balance"
 
@@ -169,7 +169,7 @@ Column {
             id: perf
 
             active: profiles.current === icon
-            activeForegroundColor: Foundations.palette.base03
+            activeForegroundColor: GtkTheme.controlBg
             anchors.right: parent.right
             anchors.rightMargin: Foundations.spacing.xxs
             anchors.verticalCenter: parent.verticalCenter

@@ -9,10 +9,10 @@ TextField {
     property color backgroundColor: "transparent"
     property color borderColor: Foundations.palette.base0D
     property real borderWidth: 1
-    property color cursorColor: Foundations.palette.base05
-    property color focusBorderColor: Foundations.palette.base05
+    property color cursorColor: GtkTheme.contentText
+    property color focusBorderColor: GtkTheme.contentText
     property color placeholderColor: Foundations.palette.base0D
-    property color textColor: Foundations.palette.base07
+    property color textColor: GtkTheme.contentText
 
     bottomPadding: Foundations.spacing.s
     color: textColor

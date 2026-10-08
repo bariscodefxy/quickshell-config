@@ -50,8 +50,8 @@ Rectangle {
 
     color: {
         if (mouseArea.hasFeedback) return mouseArea.feedbackColor;
-        if (root.isCritical) return Foundations.palette.base04;
-        return Foundations.palette.base02;
+        if (root.isCritical) return GtkTheme.contentTextDim;
+        return GtkTheme.cardBg;
     }
     implicitHeight: inner.implicitHeight
     implicitWidth: notificationWidth
@@ -146,7 +146,7 @@ Rectangle {
                 asynchronous: true
 
                 sourceComponent: Rectangle {
-                    color: root.isCritical ? Foundations.palette.base07 : Foundations.palette.base04
+                    color: GtkTheme.contentTextDim
                     implicitHeight: root.hasImage ? root.iconDimension : root.imageDimension
                     implicitWidth: root.hasImage ? root.iconDimension : root.imageDimension
                     radius: Foundations.radius.all
@@ -186,7 +186,7 @@ Rectangle {
                         asynchronous: true
 
                         sourceComponent: Icons.MaterialFontIcon {
-                            color: root.isCritical ? Foundations.palette.base08 : Foundations.palette.base07
+                            color: root.isCritical ? Foundations.palette.base08 : GtkTheme.contentText
                             font.pointSize: Foundations.font.size.xl
                             text: IconsService.getNotifIcon(root.isCritical ? "critical" : root.summary)
                         }
@@ -220,7 +220,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: margin
                 anchors.top: summaryView.bottom
-                color: Foundations.palette.base05
+                color: GtkTheme.contentText
                 height: implicitHeight
                 opacity: 1
                 text: root.body

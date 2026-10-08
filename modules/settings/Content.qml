@@ -97,7 +97,7 @@ Rectangle {
         }
     }
 
-    color: "#24242e"
+    color: GtkTheme.pageBg
     implicitHeight: root.fullHeight
     implicitWidth: root.zoomed ? root.fullWidth : Math.min(700, root.fullWidth)
     radius: 12
@@ -140,7 +140,7 @@ Rectangle {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "#38383f"
+                    color: GtkTheme.cardBg
                     radius: 8
                 }
 
@@ -227,7 +227,7 @@ Rectangle {
                 DsText.HeadingM {
                     Layout.fillWidth: true
                     Layout.leftMargin: 6
-                    color: "#f5f5f7"
+                    color: GtkTheme.contentText
                     font.family: Foundations.font.family.sans
                     text: root.pageTitle(root.currentPage)
                 }
@@ -383,7 +383,7 @@ Rectangle {
         Text {
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -1
-            color: "#c7c7cc"
+            color: GtkTheme.contentText
             font.pointSize: 16
             text: nav.glyph
         }

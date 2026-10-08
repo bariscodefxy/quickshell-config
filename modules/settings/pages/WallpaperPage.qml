@@ -53,8 +53,8 @@ ColumnLayout {
                 activeColor: "#30d158"
                 activeThumbColor: "#ffffff"
                 checked: Settings.wallpaperMode === "fill"
-                inactiveBorderColor: "#48484e"
-                inactiveColor: "#48484e"
+                inactiveBorderColor: GtkTheme.controlBg
+                inactiveColor: GtkTheme.controlBg
                 inactiveThumbColor: "#ffffff"
 
                 onToggled: {
@@ -73,8 +73,8 @@ ColumnLayout {
             title: "Folder"
 
             Buttons.Button {
-                backgroundColor: "#48484e"
-                foregroundColor: "#ffffff"
+                backgroundColor: GtkTheme.controlBg
+                foregroundColor: GtkTheme.contentText
                 text: "Rescan"
 
                 onClicked: {
@@ -90,7 +90,7 @@ ColumnLayout {
 
         Rectangle {
             anchors.fill: parent
-            color: "#2e2e38"
+            color: GtkTheme.cardBg
             radius: 10
         }
 
@@ -162,7 +162,7 @@ ColumnLayout {
 
             DsText.BodyM {
                 Layout.alignment: Qt.AlignHCenter
-                color: "#f5f5f7"
+                color: GtkTheme.contentText
                 font.family: Foundations.font.family.sans
                 horizontalAlignment: Text.AlignHCenter
                 text: "No pictures found"
@@ -171,7 +171,7 @@ ColumnLayout {
             DsText.BodyS {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillWidth: true
-                color: "#a0a0ab"
+                color: GtkTheme.contentTextDim
                 font.family: Foundations.font.family.sans
                 horizontalAlignment: Text.AlignHCenter
                 text: `Put images in ${Settings.wallpaperDir}`
@@ -181,7 +181,7 @@ ColumnLayout {
             Buttons.Button {
                 Layout.alignment: Qt.AlignHCenter
                 backgroundColor: "#0a84ff"
-                foregroundColor: "#ffffff"
+                foregroundColor: GtkTheme.contentText
                 text: "Create folder"
 
                 onClicked: {

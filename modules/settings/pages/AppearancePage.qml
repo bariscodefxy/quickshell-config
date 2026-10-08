@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import qs.services
 import qs.ds
+import qs.ds.buttons as Buttons
 import qs.ds.text as DsText
 import QtQuick
 import QtQuick.Layouts
@@ -16,11 +17,67 @@ ColumnLayout {
 
         SettingRow {
             Layout.fillWidth: true
-            iconColor: "#f5f5f7"
+            iconColor: GtkTheme.contentText
             iconName: "appearance"
             showSeparator: false
             subtitle: "Dial in the precise amount of translucency, from ultra-clear to fully tinted."
             title: "Liquid Glass"
+        }
+    }
+
+    SettingsGroup {
+        Layout.fillWidth: true
+
+        SettingRow {
+            Layout.fillWidth: true
+            iconColor: "#64d2ff"
+            iconName: "appearance"
+            subtitle: "Follow the settings.ini files (for external tools)."
+            title: "System"
+
+            Buttons.RadioButton {
+                checked: Settings.themeMode === "system"
+
+                onClicked: {
+                    if (Settings.themeMode !== "system")
+                        Settings.setThemeMode("system");
+                }
+            }
+        }
+
+        SettingRow {
+            Layout.fillWidth: true
+            iconColor: GtkTheme.contentText
+            iconName: "appearance"
+            subtitle: "WhiteSur-Light for shell and apps, applied instantly."
+            title: "Light"
+
+            Buttons.RadioButton {
+                checked: Settings.themeMode === "light"
+
+                onClicked: {
+                    if (Settings.themeMode !== "light")
+                        Settings.setThemeMode("light");
+                }
+            }
+        }
+
+        SettingRow {
+            Layout.fillWidth: true
+            iconColor: "#8e8e93"
+            iconName: "appearance"
+            showSeparator: false
+            subtitle: "WhiteSur-Dark for shell and apps, applied instantly."
+            title: "Dark"
+
+            Buttons.RadioButton {
+                checked: Settings.themeMode === "dark"
+
+                onClicked: {
+                    if (Settings.themeMode !== "dark")
+                        Settings.setThemeMode("dark");
+                }
+            }
         }
     }
 
@@ -30,7 +87,7 @@ ColumnLayout {
 
         Rectangle {
             anchors.fill: parent
-            color: "#2c2c36"
+            color: GtkTheme.cardBg
             radius: 10
         }
 
@@ -49,13 +106,13 @@ ColumnLayout {
 
                 DsText.BodyM {
                     Layout.fillWidth: true
-                    color: "#f5f5f7"
+                    color: GtkTheme.contentText
                     font.family: Foundations.font.family.sans
                     text: "Transparency"
                 }
 
                 DsText.BodyM {
-                    color: "#a0a0ab"
+                    color: GtkTheme.contentTextDim
                     font.family: Foundations.font.family.sans
                     text: `${Math.round(Settings.glass * 100)}%`
                 }
@@ -75,7 +132,7 @@ ColumnLayout {
                 Layout.fillWidth: true
 
                 DsText.BodyS {
-                    color: "#a0a0ab"
+                    color: GtkTheme.contentTextDim
                     font.family: Foundations.font.family.sans
                     text: "Clear"
                 }
@@ -85,7 +142,7 @@ ColumnLayout {
                 }
 
                 DsText.BodyS {
-                    color: "#a0a0ab"
+                    color: GtkTheme.contentTextDim
                     font.family: Foundations.font.family.sans
                     text: "Tinted"
                 }
@@ -96,9 +153,9 @@ ColumnLayout {
     DsText.BodyS {
         Layout.fillWidth: true
         Layout.leftMargin: 12
-        color: "#a0a0ab"
+        color: GtkTheme.contentTextDim
         font.family: Foundations.font.family.sans
-        text: "Applies to the menu bar and menus instantly. Saved to ~/.config/qsc/settings.json."
+        text: "Light/Dark rewrites the GTK theme (settings.ini + dconf) so apps follow; running apps pick it up on restart, shell icons after a shell restart. nix-config never selects a theme — the shell re-applies its own on every start. Saved to ~/.config/qsc/settings.json."
         wrapMode: Text.WordWrap
     }
 }

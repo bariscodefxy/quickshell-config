@@ -15,9 +15,9 @@ Item {
 
     property ButtonGroup buttonGroup: null
     property bool clickable: false
-    property color defaultForegroundColor: Foundations.palette.base07
+    property color defaultForegroundColor: GtkTheme.contentText
     property bool disabled: false
-    property color disabledForegroundColor: Foundations.palette.base04
+    property color disabledForegroundColor: GtkTheme.contentTextDim
     property color foregroundColor: disabled ? disabledForegroundColor : (selected ? selectedForegroundColor : defaultForegroundColor)
     property string imageIcon: ""  // For image-based icons (alternative to leftIcon)
     readonly property bool isClickable: clickable || buttonGroup !== null
@@ -35,7 +35,7 @@ Item {
     property string secondaryFontIcon: ""
     property string secondaryIcon: ""
     property bool selected: false
-    property color selectedForegroundColor: Foundations.palette.base05
+    property color selectedForegroundColor: GtkTheme.contentText
     property string text: ""
     property int textWeight: 400
 

@@ -5,15 +5,15 @@ import qs.services
 Text {
     id: root
 
-    property color defaultColor: Foundations.palette.base07
+    property color defaultColor: GtkTheme.contentText
 
     // State properties
     property bool disabled: false
 
     // Color properties for different states
-    property color disabledColor: Foundations.palette.base04
+    property color disabledColor: GtkTheme.contentTextDim
     property bool primary: false
-    property color primaryColor: Foundations.palette.base05
+    property color primaryColor: GtkTheme.contentText
 
     property bool interactive: false
     signal clicked()

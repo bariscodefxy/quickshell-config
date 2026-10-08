@@ -15,7 +15,7 @@ Item {
 
     property string activeTitle: activeToplevel?.title ?? ""
     property Toplevel activeToplevel: ToplevelManager.activeToplevel
-    property color colour: Foundations.palette.base05
+    property color colour: GtkTheme.contentText
     property Title current: text1
     readonly property int maxWidth: screen.width / 3
     required property var screen

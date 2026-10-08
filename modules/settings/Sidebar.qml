@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import qs.ds
 import qs.ds.icons
 import qs.ds.text as DsText
+import qs.services
 import Quickshell
 import QtQuick
 import QtQuick.Layouts
@@ -21,7 +22,7 @@ Item {
         { id: "vpn", label: "VPN", icon: "key", color: "#0a84ff" },
         { id: "battery", label: "Battery", icon: "battery", color: "#30d158" },
         { id: "general", label: "General", icon: "gear", color: "#8e8e93" },
-        { id: "appearance", label: "Appearance", icon: "appearance", color: "#f5f5f7" },
+        { id: "appearance", label: "Appearance", icon: "appearance", color: GtkTheme.contentText },
         { id: "wallpaper", label: "Wallpaper", icon: "image", color: "#64d2ff" },
         { id: "menubar", label: "Menu Bar", icon: "menubar", color: "#8e8e93" },
         { id: "sound", label: "Sound", icon: "volume-high", color: "#ff375f" },
@@ -55,14 +56,14 @@ Item {
 
                 Rectangle {
                     Layout.alignment: Qt.AlignVCenter
-                    color: "#48484e"
+                    color: GtkTheme.controlBg
                     height: 40
                     radius: 20
                     width: 40
 
                     MacIcon {
                         anchors.centerIn: parent
-                        color: "#c7c7cc"
+                        color: GtkTheme.contentText
                         name: "person"
                         size: 24
                     }
@@ -74,13 +75,13 @@ Item {
                     spacing: 1
 
                     DsText.BodyM {
-                        color: "#f5f5f7"
+                        color: GtkTheme.contentText
                         font.family: Foundations.font.family.sans
                         text: Quickshell.env("USER") || "user"
                     }
 
                     DsText.BodyS {
-                        color: "#a0a0ab"
+                        color: GtkTheme.contentTextDim
                         font.family: Foundations.font.family.sans
                         text: "Linux Account"
                     }
@@ -138,7 +139,7 @@ Item {
                     DsText.BodyM {
                         Layout.alignment: Qt.AlignVCenter
                         Layout.fillWidth: true
-                        color: "#f5f5f7"
+                        color: GtkTheme.contentText
                         font.family: Foundations.font.family.sans
                         text: row.modelData.label
                     }

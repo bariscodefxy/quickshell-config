@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import qs.ds
 import qs.ds.icons as Icons
+import qs.services
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -11,7 +12,7 @@ Rectangle {
 
     signal replySent(string text)
 
-    color: Foundations.palette.base03
+    color: GtkTheme.controlBg
     implicitHeight: rowLayout.implicitHeight + Foundations.spacing.s * 2
     radius: Foundations.radius.s
 
@@ -36,11 +37,11 @@ Rectangle {
                 radius: Foundations.radius.xs
             }
 
-            color: Foundations.palette.base07
+            color: GtkTheme.contentText
             font.family: Foundations.font.family.sansSerif
             font.pointSize: Foundations.font.size.m
             placeholderText: "Type your reply..."
-            placeholderTextColor: Foundations.palette.base04
+            placeholderTextColor: GtkTheme.contentTextDim
             selectByMouse: true
 
             onAccepted: {
@@ -57,12 +58,12 @@ Rectangle {
             Layout.preferredHeight: 32
             Layout.preferredWidth: 32
 
-            color: sendButtonArea.containsMouse ? Foundations.palette.base04 : Foundations.palette.base03
+            color: sendButtonArea.containsMouse ? GtkTheme.contentTextDim : GtkTheme.controlBg
             radius: Foundations.radius.xs
 
             Icons.MaterialFontIcon {
                 anchors.centerIn: parent
-                color: Foundations.palette.base07
+                color: GtkTheme.contentText
                 font.pointSize: Foundations.font.size.l
                 text: "send"
             }

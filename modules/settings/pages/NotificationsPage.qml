@@ -31,8 +31,8 @@ ColumnLayout {
                 activeColor: "#30d158"
                 activeThumbColor: "#ffffff"
                 checked: NotificationService.doNotDisturb
-                inactiveBorderColor: "#48484e"
-                inactiveColor: "#48484e"
+                inactiveBorderColor: GtkTheme.controlBg
+                inactiveColor: GtkTheme.controlBg
                 inactiveThumbColor: "#ffffff"
 
                 onToggled: NotificationService.doNotDisturb = checked
@@ -48,7 +48,7 @@ ColumnLayout {
 
             Buttons.Button {
                 backgroundColor: "#0a84ff"
-                foregroundColor: "#ffffff"
+                foregroundColor: GtkTheme.contentText
                 text: "Open"
 
                 onClicked: {
@@ -67,8 +67,8 @@ ColumnLayout {
             title: "Clear all"
 
             Buttons.Button {
-                backgroundColor: "#48484e"
-                foregroundColor: "#ffffff"
+                backgroundColor: GtkTheme.controlBg
+                foregroundColor: GtkTheme.contentText
                 text: "Clear"
 
                 onClicked: {

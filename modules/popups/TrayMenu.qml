@@ -137,7 +137,7 @@ Item {
                 // Separator
                 Rectangle {
                     anchors.fill: parent
-                    color: Foundations.palette.base04
+                    color: GtkTheme.contentTextDim
                     visible: modelData.isSeparator
                 }
 

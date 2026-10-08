@@ -27,7 +27,7 @@ Rectangle {
     readonly property string appIcon: group?.appIcon ?? ""
     property bool appIconUnavailable: false
 
-    color: Foundations.palette.base02
+    color: GtkTheme.cardBg
     radius: Foundations.radius.s
     border.width: isSelected ? 2 : 0
     border.color: isSelected ? Foundations.palette.base0D : "transparent"
@@ -98,13 +98,13 @@ Rectangle {
                 Layout.preferredWidth: countText.implicitWidth + Foundations.spacing.s * 2
                 Layout.preferredHeight: 20
                 radius: 10
-                color: Foundations.palette.base03
+                color: GtkTheme.controlBg
 
                 DsText.BodyS {
                     id: countText
                     anchors.centerIn: parent
                     text: root.count.toString()
-                    color: Foundations.palette.base05
+                    color: GtkTheme.contentText
                 }
             }
 
@@ -114,12 +114,12 @@ Rectangle {
                 Layout.preferredWidth: 24
                 Layout.preferredHeight: 24
                 radius: 12
-                color: expandMouseArea.containsMouse ? Foundations.palette.base03 : "transparent"
+                color: expandMouseArea.containsMouse ? GtkTheme.controlBg : "transparent"
 
                 Icons.MaterialFontIcon {
                     anchors.centerIn: parent
                     text: root.expanded ? "expand_less" : "expand_more"
-                    color: Foundations.palette.base05
+                    color: GtkTheme.contentText
                     font.pointSize: Foundations.font.size.m
 
                     Behavior on text {
@@ -148,7 +148,7 @@ Rectangle {
                 Icons.MaterialFontIcon {
                     anchors.centerIn: parent
                     text: "close"
-                    color: dismissMouseArea.containsMouse ? Foundations.palette.base07 : Foundations.palette.base05
+                    color: GtkTheme.contentText
                     font.pointSize: Foundations.font.size.s
                 }
 

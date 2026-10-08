@@ -14,7 +14,7 @@ MouseArea {
     readonly property bool hasFeedback: clickState !== "idle"
     readonly property color feedbackColor: {
         if (clickState === "searching")
-            return Qt.lighter(Foundations.palette.base03, 1.1);
+            return Qt.lighter(GtkTheme.controlBg, 1.1);
         if (clickState === "found")
             return Foundations.palette.base0B;
         if (clickState === "notfound")

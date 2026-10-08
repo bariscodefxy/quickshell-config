@@ -72,7 +72,7 @@ ShapePath {
     }
     required property BackgroundWrapper wrapper
 
-    fillColor: wrapper.hasCurrent ? Qt.alpha(Foundations.palette.base01, root.glassAlpha) : "transparent"
+    fillColor: wrapper.hasCurrent ? Qt.alpha(GtkTheme.panelBg, root.glassAlpha) : "transparent"
     strokeColor: root.edgeColor
     strokeWidth: 1
 

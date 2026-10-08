@@ -44,9 +44,9 @@ ColumnLayout {
         Layout.rightMargin: root.margin
         Layout.bottomMargin: root.margin
 
-        color: Foundations.palette.base01
+        color: GtkTheme.panelBg
         radius: Foundations.radius.s
-        border.color: Foundations.palette.base03
+        border.color: GtkTheme.controlBg
         border.width: 1
         visible: Network.ethernetIp !== "" || Network.wifiIp !== ""
 
@@ -58,7 +58,7 @@ ColumnLayout {
             spacing: Foundations.spacing.s
 
             Text.BodyS {
-                color: Foundations.palette.base04
+                color: GtkTheme.contentTextDim
                 text: qsTr("Connection Details")
                 font.weight: Font.Medium
             }
@@ -86,7 +86,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.rightMargin: root.margin
         text: qsTr("No active network connections")
-        color: Foundations.palette.base03
+        color: GtkTheme.controlBg
         horizontalAlignment: Text.AlignHCenter
         visible: Network.ethernetIp === "" && Network.wifiIp === ""
     }
@@ -176,9 +176,9 @@ ColumnLayout {
         Layout.preferredHeight: passwordDialog.implicitHeight + Foundations.spacing.m * 2
         Layout.rightMargin: root.margin
 
-        color: Foundations.palette.base01
+        color: GtkTheme.panelBg
         radius: Foundations.radius.m
-        border.color: Foundations.palette.base03
+        border.color: GtkTheme.controlBg
         border.width: 1
         visible: root.showPasswordDialog
 
@@ -190,13 +190,13 @@ ColumnLayout {
             spacing: Foundations.spacing.s
 
             Text.BodyS {
-                color: Foundations.palette.base04
+                color: GtkTheme.contentTextDim
                 text: qsTr("Enter WiFi Password")
                 font.weight: Font.Medium
             }
 
             Text.BodyS {
-                color: Foundations.palette.base05
+                color: GtkTheme.contentText
                 text: qsTr("Network: %1").arg(root.pendingSsid)
             }
 
@@ -313,13 +313,13 @@ ColumnLayout {
         spacing: Foundations.spacing.s
 
         Icons.MaterialFontIcon {
-            color: Foundations.palette.base04
+            color: GtkTheme.contentTextDim
             font.pointSize: Foundations.font.size.s
             text: parent.icon
         }
 
         Text.BodyS {
-            color: Foundations.palette.base04
+            color: GtkTheme.contentTextDim
             text: parent.label + ":"
         }
 
@@ -328,7 +328,7 @@ ColumnLayout {
         }
 
         Text.BodyS {
-            color: Foundations.palette.base05
+            color: GtkTheme.contentText
             font.family: Foundations.font.family.mono
             text: parent.value
         }

@@ -7,11 +7,15 @@ import Quickshell.Io
 import qs.ds
 import qs.services
 
-// Tracks the system GTK theme's light/dark mode and exposes dock surfaces
-// that follow it. Compiled themes (e.g. WhiteSur's gresource) expose no
+// Tracks the effective light/dark mode and exposes shell surfaces that
+// follow it. `Settings.themeMode` ("system"/"light"/"dark", set from
+// System Settings → Appearance, default "dark") overrides the GTK file
+// detection, so the shell flips instantly at runtime and enforces its
+// theme on every start. nix-config installs theme files but never
+// selects; compiled themes (e.g. WhiteSur's gresource) expose no
 // parseable color, so we follow the mode (theme name + prefer-dark flag
-// from settings.ini), not a hex value. Unknown/missing config keeps the
-// current dark glass.
+// from settings.ini), not a hex value.
+// Unknown/missing config keeps the current dark glass.
 Singleton {
     id: root
 
@@ -28,7 +32,14 @@ Singleton {
     property bool preferDark: false
 
     readonly property bool hasData: gtk3.loaded || gtk4.loaded
-    readonly property bool isDark: !root.hasData ? true : (root.preferDark || root.themeName === "" || root.themeName.toLowerCase().indexOf("dark") !== -1)
+    // Runtime override first, GTK files second.
+    readonly property bool isDark: {
+        if (Settings.themeMode === "dark")
+            return true;
+        if (Settings.themeMode === "light")
+            return false;
+        return !root.hasData ? true : (root.preferDark || root.themeName === "" || root.themeName.toLowerCase().indexOf("dark") !== -1);
+    }
 
     // Bar (menu-bar) surfaces. The bar itself paints nothing (macOS-like):
     // only menu text/icons over the wallpaper. Text/icons follow the mode.
@@ -45,6 +56,15 @@ Singleton {
     readonly property color topHighlight: root.isDark ? Qt.alpha("#ffffff", 0.3) : Qt.alpha("#ffffff", 0.3)
     readonly property color dockSep: root.isDark ? Qt.alpha("#ffffff", 0.12) : Qt.alpha("#000000", 0.12)
     readonly property color dot: root.isDark ? "#ffffff" : Foundations.glass.barIcon
+
+    // Settings / notifications / popups content (replaces the old static
+    // dark palette + hardcoded hex so pages follow the mode too).
+    readonly property color contentText: root.isDark ? "#f5f5f7" : "#1d1d1f"
+    readonly property color contentTextDim: root.isDark ? "#a0a0ab" : "#6e6e73"
+    readonly property color pageBg: root.isDark ? "#24242e" : "#ededf0"
+    readonly property color panelBg: root.isDark ? "#232329" : "#f2f2f4"
+    readonly property color cardBg: root.isDark ? "#2e2e38" : "#ffffff"
+    readonly property color controlBg: root.isDark ? "#48484e" : "#d8d8de"
 
     // Tooltip + context menu (no blur behind these, so they keep enough
     // body to stay readable over sharp backdrops).

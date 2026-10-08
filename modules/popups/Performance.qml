@@ -51,7 +51,7 @@ ColumnLayout {
         resourceValue: SystemUsage.cpuPerc || 0
         label: `${Math.round((SystemUsage.cpuPerc || 0) * 100)}%`
         sublabel: root.displayTemp(SystemUsage.cpuTemp || 0)
-        barColor: Foundations.palette.base05
+        barColor: GtkTheme.contentText
     }
 
     // GPU Section (if available)
@@ -66,7 +66,7 @@ ColumnLayout {
         resourceValue: SystemUsage.gpuPerc || 0
         label: `${Math.round((SystemUsage.gpuPerc || 0) * 100)}%`
         sublabel: root.displayTemp(SystemUsage.gpuTemp || 0)
-        barColor: Foundations.palette.base05
+        barColor: GtkTheme.contentText
     }
 
     // Memory Section
@@ -80,7 +80,7 @@ ColumnLayout {
         resourceValue: SystemUsage.memPerc || 0
         label: `${Math.round((SystemUsage.memPerc || 0) * 100)}%`
         sublabel: `${root.formatBytes(SystemUsage.memUsed || 0)} / ${root.formatBytes(SystemUsage.memTotal || 0)}`
-        barColor: Foundations.palette.base05
+        barColor: GtkTheme.contentText
     }
 
     // Storage Section
@@ -95,11 +95,11 @@ ColumnLayout {
         resourceValue: SystemUsage.storagePerc || 0
         label: `${root.formatBytes((SystemUsage.storageTotal || 0) - (SystemUsage.storageUsed || 0))} free`
         sublabel: `${root.formatBytes(SystemUsage.storageUsed || 0)} / ${root.formatBytes(SystemUsage.storageTotal || 0)}`
-        barColor: Foundations.palette.base05
+        barColor: GtkTheme.contentText
     }
 
     component ResourceBar: ColumnLayout {
-        property color barColor: Foundations.palette.base05
+        property color barColor: GtkTheme.contentText
         property string icon: ""
         property string label: ""
         property string sublabel: ""
@@ -126,7 +126,7 @@ ColumnLayout {
 
                 Text.BodyM {
                     text: title
-                    color: Foundations.palette.base05
+                    color: GtkTheme.contentText
                 }
             }
 
@@ -147,7 +147,7 @@ ColumnLayout {
                 Text.BodyS {
                     Layout.alignment: Qt.AlignRight
                     text: sublabel
-                    color: Foundations.palette.base04
+                    color: GtkTheme.contentTextDim
                 }
             }
         }
@@ -158,7 +158,7 @@ ColumnLayout {
             Layout.preferredHeight: Foundations.spacing.xs
 
             fgColour: barColor
-            bgColour: Foundations.palette.base03
+            bgColour: GtkTheme.controlBg
             value: resourceValue
         }
     }

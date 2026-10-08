@@ -38,9 +38,9 @@ ColumnLayout {
         Layout.preferredHeight: openvpnDetailsLayout.implicitHeight + Foundations.spacing.m * 2
         Layout.rightMargin: root.margin
 
-        color: Foundations.palette.base01
+        color: GtkTheme.panelBg
         radius: Foundations.radius.m
-        border.color: Foundations.palette.base03
+        border.color: GtkTheme.controlBg
         border.width: 1
         visible: OpenVPN.connected
         opacity: OpenVPN.connected ? 1.0 : 0.0
@@ -78,9 +78,9 @@ ColumnLayout {
         Layout.preferredHeight: tailscaleDetailsLayout.implicitHeight + Foundations.spacing.m * 2
         Layout.rightMargin: root.margin
 
-        color: Foundations.palette.base01
+        color: GtkTheme.panelBg
         radius: Foundations.radius.m
-        border.color: Foundations.palette.base03
+        border.color: GtkTheme.controlBg
         border.width: 1
         visible: Tailscale.connected
         opacity: Tailscale.connected ? 1.0 : 0.0
@@ -225,13 +225,13 @@ ColumnLayout {
         spacing: Foundations.spacing.s
 
         Icons.MaterialFontIcon {
-            color: Foundations.palette.base04
+            color: GtkTheme.contentTextDim
             font.pointSize: Foundations.font.size.s
             text: parent.icon
         }
 
         Text.BodyS {
-            color: Foundations.palette.base04
+            color: GtkTheme.contentTextDim
             text: parent.label + ":"
         }
 
@@ -240,7 +240,7 @@ ColumnLayout {
         }
 
         Text.BodyS {
-            color: Foundations.palette.base05
+            color: GtkTheme.contentText
             font.family: parent.value.match(/^\d+\.\d+\.\d+\.\d+$/) ? Foundations.font.family.mono : Foundations.font.family.sans
             text: parent.value
 
